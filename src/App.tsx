@@ -4,6 +4,7 @@ import Paroles from './pages/Paroles'
 import Info from './pages/Info'
 import AppLayout from './components/AppLayout'
 import Grilles from './pages/Grilles'
+import ThreeTest from './devTest/ThreeTest';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/paroles" element={<Paroles />} />
          <Route path="/info" element={<Info />} />
          <Route path="/grilles" element={<Grilles />} />
+         <Route path="/threeTest" element={<ThreeTest />} />
          </Route>
       </Routes>
     </div>

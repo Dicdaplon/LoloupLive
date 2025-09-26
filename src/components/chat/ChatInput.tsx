@@ -1,45 +1,89 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { sendMessage } from "./chatService";
 
 export default function ChatInput() {
   const ref = useRef<HTMLInputElement | null>(null);
+  const [pending, setPending] = useState(false);
+
+  const handleCommand = useCallback((raw: string) => {
+    const text = raw.trim();
+
+    // /clear
+    if (text === "/clear") {
+      (window as any).chatClear?.();
+      return true;
+    }
+
+    // /all [DDMMYYYY hh hh]
+    const m = text.match(/^\/all(?:\s+(\d{8}))?(?:\s+(\d{1,2}))?(?:\s+(\d{1,2}))?$/);
+    if (m) {
+      const [, dateStr, sh, eh] = m;
+      (window as any).chatShowAll?.(
+        dateStr,
+        sh !== undefined ? Number(sh) : undefined,
+        eh !== undefined ? Number(eh) : undefined
+      );
+      return true;
+    }
+
+    return false; // pas une commande connue
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (pending) return;
+
     const input = ref.current;
     if (!input) return;
-    const text = input.value.trim();
+
+    const raw = input.value;
+    const text = raw.trim();
     if (!text) return;
 
+    // commandes
     if (text.startsWith("/")) {
-      const parts = text.split(/\s+/);
-      const cmd = parts[0];
-
-      if (cmd === "/all") {
-        // /all [DDMMYYYY hh hh]
-        const [_, dateStr, sh, eh] = parts;
-        (window as any).chatShowAll?.(dateStr, sh ? Number(sh) : undefined, eh ? Number(eh) : undefined);
-      } else if (cmd === "/clear") {
-        (window as any).chatClear?.();
-      }
+      const handled = handleCommand(text);
       input.value = "";
-      return;
+      if (handled) return;
+      // commande inconnue : tu peux soit l'ignorer, soit l'envoyer comme texte
     }
 
-    await sendMessage(text);
+    // envoi optimiste: efface tout de suite pour réactivité
     input.value = "";
+    setPending(true);
+    try {
+      await sendMessage(text, {
+        userId: localStorage.getItem("uid") ?? "local",
+        userName: localStorage.getItem("name") ?? "Invité",
+      });
+    } catch (err) {
+      // en cas d'erreur, on remet le texte pour ne rien perdre
+      input.value = raw;
+      console.error(err);
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
-    <form onSubmit={onSubmit} style={{
-      position: "fixed", bottom: 12, left: "50%", transform: "translateX(-50%)",
-      zIndex: 20
-    }}>
+    <form
+      onSubmit={onSubmit}
+      style={{
+        position: "fixed",
+        bottom: 12,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 20,
+      }}
+    >
       <input
         ref={ref}
         type="text"
-        placeholder="Message pour tous !"
+        placeholder={pending ? "Envoi..." : "Message pour tous !"}
         autoComplete="off"
+        enterKeyHint="send"
+        inputMode="text"
+        disabled={pending}
         style={{
           width: "min(78vw, 560px)",
           background: "rgba(255,255,255,0.9)",
