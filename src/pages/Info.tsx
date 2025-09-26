@@ -17,15 +17,8 @@ export default function Info() {
     // Si le fichier est sous "src/assets/js/visual/background.js",
     // l'idéal serait de le porter en module ou de créer un composant p5.
     // Ici on reproduit ton injection de script 1:1.
-    const script = document.createElement("script");
-    script.src = "/src/assets/js/visual/background.js";
-    script.async = true;
-    document.body.appendChild(script);
 
-    return () => {
-      // cleanup: on retire le script si on quitte la page
-      document.body.removeChild(script);
-    };
+   
   }, []);
 
   return (
