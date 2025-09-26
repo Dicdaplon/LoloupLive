@@ -1,0 +1,43 @@
+main.info-content {
+  display: block;
+  height: auto;
+}
+
+.info-content {
+  position: relative;
+  z-index: 10;
+  color: white;
+  background: rgba(255, 255, 255, 0); 
+  padding:2rem;
+margin: 0.5rem 1rem 2rem 1rem;
+  padding-bottom: 4rem; /* espace pour ne pas coller en bas */
+  border-radius: 1rem;
+  font-family: 'Baloo 2', sans-serif;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  backdrop-filter: blur(2px);
+}
+
+.info-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.info-content p {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.info-content ul {
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.info-content code {
+  background: rgba(126, 124, 124, 0.308);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+  line-height: 2.8;
+  font-family: 'Baloo 2', sans-serif;
+}

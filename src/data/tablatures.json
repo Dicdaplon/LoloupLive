@@ -1,0 +1,652 @@
+[
+  {
+    "titre": "Sweet dream",
+    "style": "pop",
+    "bpm": 80,
+    "tonalite": "Am",
+    "difficulte": "facile",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Am",
+          "%",
+          "F",
+          "E"
+        ]
+      }
+    ]
+  },
+    {
+    "titre": "Smells Like Teen Spirit",
+    "style": "Rock",
+    "bpm": 80,
+    "tonalite": "Em",
+    "difficulte": "facile",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Em",
+          "A",
+          "G",
+          "C"
+        ]
+      }
+    ]
+  },
+  {
+    "titre": "Jardin d'hiver",
+    "style": "Jazz",
+    "bpm": 75,
+    "tonalite": "C#7",
+    "difficulte": "Intermédiaire",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "C#7",
+          "%",
+          "F#m7",
+          "%"
+        ],
+        "repetitions": 4
+      },
+      {
+        "mesures": [
+          "Bm7",
+          "E7",
+          "AMaj7",
+          "%"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "C#7",
+          "%",
+          "F#m7",
+          "%"
+        ],
+        "repetitions": 2
+      }
+    ]
+  },
+  {
+    "titre": "Jardin d'hiver (simplifié)",
+    "style": "Jazz",
+    "bpm": 75,
+    "tonalite": "A7",
+    "difficulte": "Facile",
+    "signature": "4/4",
+    "indication": "Capo 4",
+    "grille": [
+      {
+        "mesures": [
+          "A7",
+          "%",
+          "Dm7",
+          "%"
+        ],
+        "repetitions": 4
+      },
+      {
+        "mesures": [
+          "Gm7",
+          "C7",
+          "FMaj7",
+          "%"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "A7",
+          "%",
+          "Dm7",
+          "%"
+        ],
+        "repetitions": 2
+      }
+    ]
+  },
+  {
+    "titre": "Hoist that Rag",
+    "style": "Rock",
+    "bpm": 80,
+    "tonalite": "Am",
+    "difficulte": "Facile",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Am",
+          "Dm",
+          "E7",
+          "Am"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "C",
+          "Dm",
+          "F",
+          "E7"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "La mort du peuple",
+    "style": "Folk",
+    "bpm": 85,
+    "tonalite": "Bm",
+    "difficulte": "Intermédiaire",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Bm",
+          "G",
+          "Bm",
+          "F#m"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "Bm",
+          "G",
+          "A",
+          "F#m"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Em",
+          "%",
+          "G",
+          "A"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "E",
+          "%",
+          "G",
+          "A"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Bm",
+          "G",
+          "D",
+          "A"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "Bm",
+          "G",
+          "F#m",
+          "%"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "Les gens raisonnables",
+    "style": "Chanson",
+    "bpm": 80,
+    "tonalite": "Gm",
+    "difficulte": "Avancé",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Gm",
+          "Cm/F",
+          "Gm",
+          "Cm/F"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "Gm",
+          "Bb",
+          "F",
+          "Cm"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Gm",
+          "%",
+          "%",
+          "Cm/D"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "Les gens raisonnables (simplifié)",
+    "style": "Chanson",
+    "bpm": 80,
+    "tonalite": "Em",
+    "difficulte": "Moyen",
+    "signature": "4/4",
+    "indication": "Capo 3",
+    "grille": [
+      {
+        "mesures": [
+          "Em",
+          "Am/D",
+          "Em",
+          "Am/D"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "Em",
+          "G",
+          "D",
+          "Am"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Em",
+          "%",
+          "%",
+          "Am/B"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "LoloupBossa",
+    "style": "Bossa",
+    "bpm": 100,
+    "tonalite": "Cm7",
+    "difficulte": "Avancé",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Cm7",
+          "%",
+          "Fm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Dø",
+          "G7",
+          "Cm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Cm7",
+          "%",
+          "Fm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Dø",
+          "G7",
+          "Cm",
+          "Dø/G7"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "Les yeux noirs",
+    "style": "Swing",
+    "bpm": 95,
+    "tonalite": "A7",
+    "difficulte": "Moyen",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "A7",
+          "%",
+          "Dm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "A7",
+          "%",
+          "Bb",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Gm",
+          "%",
+          "Dm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "A7",
+          "%",
+          "Dm",
+          "%"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "Swing",
+    "style": "Swing",
+    "bpm": 100,
+    "tonalite": "Am",
+    "difficulte": "Facile",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Am",
+          "%",
+          "Dm",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "E7",
+          "%",
+          "Am",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Dm",
+          "%",
+          "Am",
+          "%"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "E7",
+          "Bb",
+          "Am",
+          "F7/E7"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "From the Start (simplifié)",
+    "style": "Pop",
+    "bpm": 85,
+    "tonalite": "Dm",
+    "difficulte": "Facile",
+    "signature": "4/4",
+    "indication": "Capo 1",
+    "grille": [
+      {
+        "mesures": [
+          "Dm",
+          "G",
+          "C",
+          "%"
+        ],
+        "repetitions": 2
+      },
+      {
+        "mesures": [
+          "Dm",
+          "G",
+          "Ab",
+          "A"
+        ],
+        "repetitions": 1
+      },
+      {
+        "mesures": [
+          "Dm",
+          "G",
+          "C",
+          "%"
+        ],
+        "repetitions": 1
+      }
+    ]
+  },
+  {
+    "titre": "Feel Good inc",
+    "style": "Groove",
+    "bpm": 90,
+    "tonalite": "Dm",
+    "difficulte": "Facile",
+    "signature": "4/4",
+    "grille": [
+      {
+        "mesures": [
+          "Dm",
+          "Am",
+          "Gm",
+          "Dm"
+        ],
+        "repetitions": 4
+      },
+      {
+        "mesures": [
+          "Dm",
+          "Am",
+          "Gm",
+          "Am"
+        ],
+        "repetitions": 4
+      }
+    ]
+  },
+  {
+  "titre": "Pas de Loup",
+  "style": "Funk",
+  "bpm": 100,
+  "tonalite": "Em",
+  "difficulte": "Intermédiaire",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Em7", "%", "A7", "%"],
+      "repetitions": 2
+    },
+    {
+      "mesures": ["Bm7", "A7", "Em7", "%"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "Rastaloup",
+  "style": "Reggae",
+  "bpm": 75,
+  "tonalite": "G",
+  "difficulte": "Facile",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["G", "%", "C", "%"],
+      "repetitions": 2
+    },
+    {
+      "mesures": ["D", "%", "C", "G"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "RockLoloup",
+  "style": "Rock",
+  "bpm": 110,
+  "tonalite": "A",
+  "difficulte": "Facile",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["A", "D", "E", "A"],
+      "repetitions": 2
+    }
+  ]
+},
+{
+  "titre": "WolfyJazz",
+  "style": "Jazz",
+  "bpm": 95,
+  "tonalite": "F",
+  "difficulte": "Avancé",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Fmaj7", "Gm7", "Am7", "Bbmaj7"],
+      "repetitions": 2
+    },
+    {
+      "mesures": ["Gm7", "C7", "Fmaj7", "%"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "Luna Bossa",
+  "style": "Bossa Nova",
+  "bpm": 85,
+  "tonalite": "Dm",
+  "difficulte": "Avancé",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Dm7", "G7", "Cmaj7", "A7"],
+      "repetitions": 2
+    }
+  ]
+},
+{
+  "titre": "Coeur de Meute",
+  "style": "Soul",
+  "bpm": 92,
+  "tonalite": "Bb",
+  "difficulte": "Avancé",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Bbmaj7", "%", "Ebmaj7", "%"],
+      "repetitions": 2
+    },
+    {
+      "mesures": ["Cm7", "F7", "Bbmaj7", "%"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "Loup Boogie",
+  "style": "Blues",
+  "bpm": 90,
+  "tonalite": "A",
+  "difficulte": "Intermédiaire",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["A7", "%", "%", "%"],
+      "repetitions": 1
+    },
+    {
+      "mesures": ["D7", "%", "A7", "%"],
+      "repetitions": 1
+    },
+    {
+      "mesures": ["E7", "D7", "A7", "E7"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "Alpha Pop",
+  "style": "Pop",
+  "bpm": 100,
+  "tonalite": "C",
+  "difficulte": "Facile",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["C", "G", "Am", "F"],
+      "repetitions": 2
+    }
+  ]
+},
+{
+  "titre": "Lupobeat",
+  "style": "Afrobeat",
+  "bpm": 105,
+  "tonalite": "Am",
+  "difficulte": "Intermédiaire",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Am7", "%", "Dm7", "%"],
+      "repetitions": 2
+    },
+    {
+      "mesures": ["Em7", "Dm7", "Am7", "%"],
+      "repetitions": 1
+    }
+  ]
+},
+{
+  "titre": "Flow Sauvage",
+  "style": "Hip-Hop",
+  "bpm": 88,
+  "tonalite": "Cm",
+  "difficulte": "Facile",
+  "signature": "4/4",
+  "grille": [
+    {
+      "mesures": ["Cm7", "%", "Abmaj7", "%"],
+      "repetitions": 2
+    }
+  ]
+}
+]

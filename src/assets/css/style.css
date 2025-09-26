@@ -1,0 +1,336 @@
+/* Reset + base */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: var(--app-height);
+  min-height: 100vh; /* fallback */
+  font-family: 'Baloo 2', sans-serif;
+  background: #2e2e2e00;
+  color: #ffffffe9;
+}
+
+/* Fond p5 */
+canvas {
+  position: fixed ;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* Page d'accueil (si utilisée) */
+main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: var(--app-height);
+  gap: 1rem;
+}
+
+button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+}
+
+
+
+
+
+h1 {
+  margin: 1rem 0;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+
+
+
+
+@media screen and (orientation: portrait) {
+
+  #logo {
+  position: absolute;
+  top:7%;
+  left: 25%;
+  transform: translateX(-50%);
+  width:  60vw;
+  filter: drop-shadow(0 0 5px #0ff)
+          drop-shadow(0 0 10px #0ff)
+          drop-shadow(0 0 20px #0ff);
+  animation: glowPulse 2s infinite ease-in-out;
+  z-index: 10;
+}
+
+
+
+}
+
+@media screen and (orientation: landscape) {
+
+  #logo {
+  position: absolute;
+  top:60%;
+  left: 10%;
+  transform: translateX(-50%);
+  width: 20vw;
+  filter: drop-shadow(0 0 5px #0ff)
+          drop-shadow(0 0 10px #0ff)
+          drop-shadow(0 0 20px #0ff);
+  animation: glowPulse 2s infinite ease-in-out;
+  z-index: 10;
+}
+
+
+
+}
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px #0ff)
+            drop-shadow(0 0 10px #0ff)
+            drop-shadow(0 0 20px #0ff);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px #0ff)
+            drop-shadow(0 0 20px #0ff)
+            drop-shadow(0 0 30px #0ff);
+  }
+
+  
+}
+
+
+#chat-form {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  z-index: 999;
+}
+
+#chat-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+@keyframes pop {
+  0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.floating-message {
+  position: fixed;
+  font-size: 1.4rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 1s ease;
+  white-space: nowrap;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+
+
+/* === CAMERA FULLSCREEN === */
+body.camera-page {
+  margin: 0;
+  padding: 0;
+  background: black;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+.camera-page #camera-container {
+  position: relative;
+  width: 100vw;
+  height: 100%;
+}
+
+.camera-page #video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-page #overlay-buttons {
+  position: absolute;
+  bottom: 15vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  z-index: 10;
+}
+
+.camera-page #overlay-buttons .photo-btn {
+  pointer-events: auto;
+  all: unset;
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  color: #0ff;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #0ff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #0ff;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.camera-page #overlay-buttons .photo-btn:hover {
+  transform: scale(1.1);
+  background: rgba(0, 255, 255, 0.2);
+}
+
+.camera-page #overlay-buttons .photo-btn:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  border-color: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+
+
+
+.paroles-line {
+  display: inline;
+  font-size: 1.5rem;
+  font-family: 'Baloo 2', sans-serif;
+  color: white;
+  text-align: center;
+  text-shadow:
+    0 0 5px rgba(0, 255, 255, 0.5),
+    0 0 10px rgba(0, 255, 255, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.2);
+  line-height: 1.8;
+  padding: 0.5rem;
+  max-width: 90vw;
+}
+
+.line-wrapper {
+  display: block;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.anchor-word {
+  position: relative;
+  display: inline-block;
+}
+
+.floating-insert {
+  position: absolute;
+  bottom: calc(100% - 0.8rem);
+  left: 50%;
+  transform: translateX(-50%); 
+  font-size: 1.2rem;
+  color: #0ff;
+  opacity: 0.9;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow:
+    0 0 5px rgba(0, 255, 255, 0.5),
+    0 0 10px rgba(0, 255, 255, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+
+
+.anchor-word {
+  white-space: nowrap;
+}
+
+
+#navigation-overlay {
+  position: fixed;
+  right: 1rem; /* ou left: 1rem si tu préfères */
+  bottom: 2rem;
+  z-index: 1000;
+
+  background-color: #0d4ea363; 
+  color: rgba(255, 0, 0, 0.699);
+  border: none;
+  border-radius: 50%;
+  padding: 1rem;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#navigation-overlay:hover {
+  transform: scale(1.1);
+}
+
+
+@keyframes shake {
+  0% { transform: translate(-50%, 0) rotate(0deg); }
+  20% { transform: translate(-50%, -5px) rotate(-5deg); }
+  40% { transform: translate(-50%, 5px) rotate(5deg); }
+  60% { transform: translate(-50%, -5px) rotate(-5deg); }
+  80% { transform: translate(-50%, 5px) rotate(5deg); }
+  100% { transform: translate(-50%, 0) rotate(0deg); }
+}
+
+#logo.shake {
+  animation: shake 0.6s;
+}
+
+/* La ligne devient un repère pour la couche d’accords */
+.overlay-chords {
+  position: relative;
+}
+
+/* La couche d’accords flotte au-dessus de la ligne, sans bousculer le texte */
+.chords-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;              /* on part du haut de la ligne */
+  pointer-events: none;/* clics passent au texte si besoin */
+}
+
+/* Chaque accord est positionné horizontalement en 'left: Nch' */
+.chord-abs {
+  position: absolute;
+  bottom: 100%;        /* au-dessus de la ligne */
+  white-space: nowrap;
+  transform: translateY(+0.25em); /* petit lift pour coller visuellement */
+}
+
+/* Style visuel (à ajuster à ton thème) */
+.chord-badge {
+  color: rgb(255, 73, 73);
+  font-size: 0.75em;
+  line-height: 1;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: rgba(202, 141, 9, 0);
+  backdrop-filter: blur(2px);
+}
+
+
+.floating-message-loloup {
+  position: fixed;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 1s ease;
+  white-space: nowrap;
+}

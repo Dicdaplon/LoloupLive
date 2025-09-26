@@ -1,0 +1,126 @@
+main {
+  display: block;
+  height: auto;
+}
+.paroles-neonA {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.8;
+  color: #d5feff;
+  text-align: left;
+  text-shadow:
+    0 0 5px rgba(0, 255, 255, 0.5),
+    0 0 10px rgba(0, 255, 255, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.2);
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 90vw;
+}
+
+.paroles-neonB {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.8;
+  color: #ffe1fe;
+  text-align: left;
+  text-shadow:
+    0 0 5px rgba(221, 0, 255, 0.5),
+    0 0 10px rgba(255, 0, 238, 0.3),
+    0 0 20px rgba(200, 0, 255, 0.2);
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 90vw;
+}
+
+.paroles-neonC {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.8;
+  color: #e6ffd0;
+  text-align: left;
+  text-shadow:
+    0 0 5px rgba(69, 82, 18, 0.5),
+    0 0 10px rgba(195, 255, 0, 0.3),
+    0 0 20px rgba(183, 255, 0, 0.2);
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 90vw;
+}
+
+
+@media screen and (orientation: portrait) {
+#selection-container-paroles {
+  text-align: left;
+  padding: 1rem 1rem;
+  margin-top: 1vh;
+  backdrop-filter: blur(8px);
+  background: rgba(131, 131, 131, 0.068);
+  border-radius: 1rem;
+  width: 70vw;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+}
+
+#selector-paroles {
+  padding: 1vh 4vh;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #222;
+  color: white;
+}
+#contenu-paroles {
+  flex-grow: 1;                 /* Remplit le reste de l’écran */
+  white-space: pre-wrap;
+  text-align: left;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background: #1a1a1a00;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #000a;
+  font-size: 1rem;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+}
+
+@media screen and (orientation: landscape) {
+
+  
+#selection-container-paroles {
+  text-align: left;
+  padding: 1rem 1rem;
+  margin-top: 1vh;
+  backdrop-filter: blur(8px);
+  background: rgba(114, 114, 114, 0.048);
+  border-radius: 1rem;
+  width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+}
+
+#selector-paroles {
+  padding: 1vh 16vw;
+  font-size: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #222;
+  color: white;
+}
+#contenu-paroles {
+  flex-grow: 2;                 /* Remplit le reste de l’écran */
+  white-space: pre-wrap;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #8b0d7200;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #000a;
+  text-align: left;
+  font-size:1.1rem;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+}
