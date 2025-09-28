@@ -14,13 +14,13 @@ export default function UserBadge({ userName, onClick }: Props) {
       title="Gérer l'identifiant local"
       style={{
         position: "fixed",
-        top: 12,
+        top: 80,
         right: 12,
         zIndex: 30,
         padding: "8px 12px",
         borderRadius: 999,
-        border: "1px solid rgba(255,255,255,0.6)",
-        background: "rgba(255,255,255,0.85)",
+        border: "1px solid rgba(28, 43, 182, 0.73)",
+        background: "rgba(189, 189, 189, 0.81)",
         boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
         fontSize: 13,
         cursor: "pointer",

@@ -2,14 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import logoUrl from "../../public/HDexportLogo.png";
 
 type Props = {
-  size?: number;
-  zIndex?: number;
   className?: string;
-  auto?: boolean;            // auto déclenchement périodique
-  intervalMs?: number;       // période auto
-  messageCooldownMs?: number;// cooldown entre deux messages
-  // Si tu préfères passer un chemin custom (sinon BASE_URL + data/HDexportLogo.png)
-  srcUrl?: string;
+  auto?: boolean;             // auto-déclenchement périodique
+  intervalMs?: number;        // période auto
+  messageCooldownMs?: number; // cooldown entre deux messages
+  srcUrl?: string;            // chemin custom si besoin
 };
 
 const DEFAULT_MESSAGES = [
@@ -67,8 +64,6 @@ const DEFAULT_MESSAGES = [
 ];
 
 const Logo: React.FC<Props> = ({
-  size = 250,
-  zIndex = 9,
   className = "",
   auto = true,
   intervalMs = 30_000,
@@ -79,22 +74,7 @@ const Logo: React.FC<Props> = ({
   const [ok, setOk] = useState(true);
   const lastClickRef = useRef(0);
   const timerRef = useRef<number | null>(null);
-
-  const resolvedSrc = srcUrl ?? (logoUrl);
-
-  // Styles + animations nécessaires (shake, fade-out, conteneur message)
-  const styles: React.CSSProperties = {
-    position: "fixed",
-    left: "0vw",
-    top: "18vw",
-    width: size*3,
-    height: "auto",
-    zIndex,
-    cursor: "pointer",
-    userSelect: "none",
-    pointerEvents: "auto",
-    filter: "drop-shadow(0 0 8px rgba(0,240,255,.6))",
-  };
+  const resolvedSrc = srcUrl ?? logoUrl;
 
   useEffect(() => {
     return () => {
@@ -105,41 +85,38 @@ const Logo: React.FC<Props> = ({
     };
   }, []);
 
-const showMessage = () => {
-  const now = Date.now();
-  if (now - lastClickRef.current < messageCooldownMs) return;
-  lastClickRef.current = now;
+  const showMessage = () => {
+    const now = Date.now();
+    if (now - lastClickRef.current < messageCooldownMs) return;
+    lastClickRef.current = now;
 
-  const logoEl = imgRef.current;
-  if (!logoEl) return;
+    const logoEl = imgRef.current;
+    if (!logoEl) return;
 
-  // 1) LIRE LA POSITION AVANT d'ajouter la classe shake
-  const rect = logoEl.getBoundingClientRect();
+    // 1) Récupérer la position du logo
+    const rect = logoEl.getBoundingClientRect();
 
-  // 2) Shake (après)
-  logoEl.classList.add("loloup-shake");
-  setTimeout(() => logoEl.classList.remove("loloup-shake"), 2000);
+    // 2) Animation shake via ta classe CSS existante
+    logoEl.classList.add("shake");
+    window.setTimeout(() => logoEl.classList.remove("shake"), 600);
 
-  // 3) Crée la bulle à une position FIXE (viewport) -> pas de scrollX/scrollY
-  const random = DEFAULT_MESSAGES[Math.floor(Math.random() * DEFAULT_MESSAGES.length)];
-  const div = document.createElement("div");
-  div.className = "floating-message-loloup";
-  div.style.position = "fixed";                        // 👈 FIXED, pas absolute
-  div.style.left = rect.left + rect.width + "px";     // viewport coords
-  div.style.top  = rect.top + rect.height / 3 + "px"; // viewport coords
-  div.innerText = random;
+    // 3) Bulle d’info (positionnée en viewport)
+    const random = DEFAULT_MESSAGES[Math.floor(Math.random() * DEFAULT_MESSAGES.length)];
+    const div = document.createElement("div");
+    div.className = "floating-message-loloup";
+    div.style.position = "fixed";
+    // neutralise la règle transform: translate(-50%,-50%) présente dans ton CSS
+    div.style.transform = "none";
+    div.innerText = random;
 
-  document.body.appendChild(div);
+    document.body.appendChild(div);
+    window.setTimeout(() => div.classList.add("fade-out"), 4000);
+    window.setTimeout(() => div.remove(), 6000);
+  };
 
-  // fade + remove
-  setTimeout(() => div.classList.add("fade-out"), 4000);
-  setTimeout(() => div.remove(), 6000);
-};
-
-  // Auto show
+  // Déclenchement auto
   useEffect(() => {
-    // première fois au mount
-    showMessage();
+    showMessage(); // au mount
     if (!auto) return;
     timerRef.current = window.setInterval(() => {
       if (!document.hidden) showMessage();
@@ -150,91 +127,24 @@ const showMessage = () => {
         timerRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auto, intervalMs]); // volontairement pas dépendant de showMessage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auto, intervalMs]);
 
-  return (
-    <>
-      {/* Styles locaux pour animations + bulle */}
-     <style>{`
-  @keyframes shakeKey {
-    0% { transform: translate(0,0) rotate(0deg); }
-    20% { transform: translate(1px,-1px) rotate(-1deg); }
-    40% { transform: translate(-1px,1px) rotate(1deg); }
-    60% { transform: translate(1px,1px) rotate(0deg); }
-    80% { transform: translate(-1px,-1px) rotate(1deg); }
-    100% { transform: translate(0,0) rotate(0deg); }
-  }
-  .loloup-shake {
-    animation: shakeKey 0.4s ease-in-out 0s 5;
-  }
-
-  /* 🔧 FIX: position fixed + pas de scale */
-  .floating-message-loloup {
-    position: fixed;                 /* <- fixe dans le viewport */
-    max-width: 280px;
-    white-space: pre-wrap;
-    line-height: 1.15;
-    z-index: 9999;
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-family: "Baloo 2", system-ui, sans-serif;
-    font-size: 14px;
-    color: #ffffffff;
-    background: rgba(255, 255, 255, 0.02);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.25), 0 0 24px rgba(0, 238, 255, 1);
-    backdrop-filter: blur(2px);
-    transform: translate3d(0,0,0);  /* <- stabilise le rendu */
-    will-change: opacity;           /* <- on n'anime plus transform */
-    opacity: 0;                     /* <- fade-in */
-    animation: msgFadeIn 180ms ease-out forwards;
-  }
-  .floating-message-loloup::before {
-    content: "";
-    position: absolute;
-    left: -8px; top: 14px;
-    width: 0; height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 8px solid rgba(255,255,255,0.92);
-    filter: drop-shadow(0 0 10px rgba(0,240,255,0.4));
-  }
-  @keyframes msgFadeIn { from { opacity: 0 } to { opacity: 1 } }
-
-  .floating-message-loloup.fade-out {
-    transition: opacity 1000ms ease;
-    opacity: 0;
-  }
-`}</style>
-
-      {ok ? (
-        <img
-          ref={imgRef}
-          src={resolvedSrc}
-          alt="Logo Loloup"
-          style={styles}
-          onClick={showMessage}
-          onError={() => setOk(false)}
-          draggable={false}
-        />
-      ) : (
-        <div
-          style={{
-            ...styles,
-            width: size,
-            height: size,
-            background: "rgba(255,255,255,.1)",
-            border: "1px dashed rgba(255,255,255,.3)",
-            display: "grid",
-            placeItems: "center",
-            color: "#fff",
-            fontSize: 12,
-          }}
-        >
-          logo introuvable
-        </div>
-      )}
-    </>
+  return ok ? (
+    <img
+      ref={imgRef}
+      id="logo"                 // ← stylé par ton style.css (media queries portrait/paysage, glow, etc.)
+      className={className}
+      src={resolvedSrc}
+      alt="Logo Loloup"
+      onClick={showMessage}
+      onError={() => setOk(false)}
+      draggable={false}
+    />
+  ) : (
+    <div id="logo" className={`logo-placeholder ${className}`}>
+      logo introuvable
+    </div>
   );
 };
 

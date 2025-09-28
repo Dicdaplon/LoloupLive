@@ -52,8 +52,8 @@ h1 {
 
   #logo {
   position: absolute;
-  top:7%;
-  left: 25%;
+  top:1%;
+  left: 50%;
   transform: translateX(-50%);
   width:  60vw;
   filter: drop-shadow(0 0 5px #0ff)
@@ -61,6 +61,19 @@ h1 {
           drop-shadow(0 0 20px #0ff);
   animation: glowPulse 2s infinite ease-in-out;
   z-index: 10;
+}
+
+.floating-message-loloup {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 1s ease;
+  white-space: nowrap;
+  left :63vw;
+  top: 15vh;
 }
 
 
@@ -71,7 +84,7 @@ h1 {
 
   #logo {
   position: absolute;
-  top:60%;
+  top:55%;
   left: 10%;
   transform: translateX(-50%);
   width: 20vw;
@@ -82,6 +95,18 @@ h1 {
   z-index: 10;
 }
 
+.floating-message-loloup {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 1s ease;
+  white-space: nowrap;
+  left :15vw;
+  top: 70vh;
+}
 
 
 }
@@ -124,17 +149,6 @@ h1 {
 @keyframes pop {
   0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
   100% { transform: translateX(-50%) scale(1); opacity: 1; }
-}
-
-.floating-message {
-  position: fixed;
-  font-size: 1.4rem;
-  font-weight: bold;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 999;
-  transition: opacity 1s ease;
-  white-space: nowrap;
 }
 
 .fade-out {
@@ -322,19 +336,6 @@ body.camera-page {
   background: rgba(202, 141, 9, 0);
   backdrop-filter: blur(2px);
 }
-
-
-.floating-message-loloup {
-  position: fixed;
-  font-size: 0.7rem;
-  font-weight: bold;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 999;
-  transition: opacity 1s ease;
-  white-space: nowrap;
-}
-
 
 /* Layout minimal */
 .u-container { max-width: 880px; margin: 24px auto; padding: 0 12px; color: #fff; }

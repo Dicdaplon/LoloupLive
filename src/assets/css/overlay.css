@@ -7,9 +7,9 @@
   width: 20px;
   height: 7vw;
   border-radius: 16px 0 0 16px;
-  background: #740ee946; /* sky-500 */
+  background: #0e022b2a; /* sky-500 */
   color: #fff;
-  box-shadow: 0 4px 12px rgba(27, 27, 27, 0.192);
+  box-shadow: 0 4px 12px rgba(27, 27, 27, 0.527);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,7 +27,8 @@
 .edge-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(75, 0, 82, 0.068);
+  background: rgba(14, 4, 15, 0.068);
+  backdrop-filter: blur(4px);
   z-index: 59;
 }
 
@@ -37,12 +38,12 @@
   right: 0;
   height: 100%;
   width: 9rem; /* 48 tailwind ≈ 192px */
-  background: #0b0922; /* neutre foncé */
+  background: #3f3e0277; /* neutre foncé */
   color: white;
   border-radius: 16px 0 0 16px;
   padding: 12px;
   z-index: 60;
-  box-shadow: -4px 0 16px rgba(104, 23, 23, 0.4);
+  box-shadow: -4px 0 16px rgba(90, 7, 7, 0.356);
 
   transform: translateX(100%);
   transition: transform 200ms ease;
@@ -66,7 +67,7 @@
   padding: 0 16px;                /* 0 en vertical, le texte restera centré */
   border-radius: 9999px;
   border: none;
-  background: rgba(255,255,255,0.1);
+  background: rgba(66, 3, 50, 0.582);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
