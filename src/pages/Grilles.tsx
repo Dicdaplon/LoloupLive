@@ -1,109 +1,85 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-// Vite/TS can import JSON directly
-import data from "../data/tablatures.json";
-import   
-  EdgePeekSheet
- from '../components/Overlay'
-/* ================================
- * Constants
- * ================================ */
+import EdgePeekSheet from "../components/Overlay";
 
-/** URL query parameter used to select a song. */
+import { db } from "@/lib/firebase/app";         // ← RTDB
+import { ref, onValue } from "firebase/database";
+
+/* ================================
+ * Constantes
+ * ================================ */
 const QUERY_PARAM_SONG = "song";
-/** Milliseconds in one minute (for BPM timing). */
 const MS_PER_MINUTE = 60000;
-/** Symbol used to repeat the previous measure in a line. */
 const REPEAT_MEASURE_SYMBOL = "%";
 
 /* ================================
  * Types
  * ================================ */
-
-/** One line (row) of the chord grid, e.g., ["Am", "%", "F", "E"]. */
-type Line = {
-  mesures: string[];      // ex: ["Am","%","F","E"]
-  repetitions?: number;   // ex: 2
-};
-
-/** A song (grid metadata + lines). */
+type Line = { mesures: string[]; repetitions?: number };
 type Song = {
   titre: string;
   style?: string;
   bpm?: number;
   tonalite?: string;
   difficulte?: string;
-  signature?: string;     // "4/4"
-  indication?: string;    // ex: "Capo 3"
+  signature?: string;
+  indication?: string;
   grille: Line[];
 };
 
 /* ================================
  * Helpers
  * ================================ */
-
-/**
- * Ensure we always work with an array of Song.
- * The project's JSON is already an array; this just guards the type.
- */
-function normalizeList(input: unknown): Song[] {
-  return Array.isArray(input) ? (input as Song[]) : [];
-}
-
-/**
- * Replace "%" tokens by the previous measure inside a single line.
- * If "%" appears in the first position, it resolves to an empty string.
- */
 function expandPercents(measures: string[]): string[] {
-  const expandedMeasures: string[] = [];
-  for (let measureIndex = 0; measureIndex < measures.length; measureIndex++) {
-    const rawValue = (measures[measureIndex] || "").trim();
-    if (rawValue === REPEAT_MEASURE_SYMBOL) {
-      expandedMeasures.push(expandedMeasures[measureIndex - 1] ?? "");
-    } else {
-      expandedMeasures.push(rawValue);
-    }
+  const out: string[] = [];
+  for (let i = 0; i < measures.length; i++) {
+    const raw = (measures[i] || "").trim();
+    out.push(raw === REPEAT_MEASURE_SYMBOL ? out[i - 1] ?? "" : raw);
   }
-  return expandedMeasures;
-}
-
-/**
- * Duplicate a line N times (with a minimum of 1).
- * Returns an array of cloned arrays (no mutation).
- * (Kept for parity with original code; currently unused.)
- */
-function repeatLine(line: string[], times = 1): string[][] {
-  const repeatCount = Math.max(1, times | 0);
-  return Array.from({ length: repeatCount }, () => [...line]);
+  return out;
 }
 
 /* ================================
- * Component
+ * Composant
  * ================================ */
-
 export default function Grilles(): JSX.Element {
-  const songList = useMemo(() => normalizeList(data), []);
-
-  // selection (via ?song=Title in URL if present)
+  // Liste récupérée depuis RTDB
+  const [songList, setSongList] = useState<Song[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | "">("");
 
+  // Lecture temps réel de /chords
   useEffect(() => {
-    const currentUrl = new URL(window.location.href);
-    const requestedTitle = currentUrl.searchParams.get(QUERY_PARAM_SONG);
-    if (!requestedTitle) return;
-
-    const foundIndex = songList.findIndex(
-      (songItem) => songItem.titre.toLowerCase() === requestedTitle.toLowerCase()
+    const chordsRef = ref(db, "chords");
+    const unsub = onValue(
+      chordsRef,
+      (snap) => {
+        const val = snap.val() || {};
+        // val = { "id": {titre, grille, ...}, ... } → on garde juste les valeurs
+        const arr = Object.values(val) as Song[];
+        // Tri par titre pour une liste stable
+        arr.sort((a, b) => (a?.titre || "").localeCompare(b?.titre || ""));
+        setSongList(arr);
+        setLoading(false);
+      },
+      () => setLoading(false)
     );
-    if (foundIndex >= 0) setSelectedIndex(foundIndex);
+    return () => unsub();
+  }, []);
+
+  // Sélection via ?song= dans l’URL, si présent
+  useEffect(() => {
+    if (!songList.length) return;
+    const sp = new URLSearchParams(location.search);
+    const requested = sp.get(QUERY_PARAM_SONG);
+    if (!requested) return;
+    const idx = songList.findIndex((s) => (s.titre || "").toLowerCase() === requested.toLowerCase());
+    if (idx >= 0) setSelectedIndex(idx);
   }, [songList]);
 
-  const selectedSong: Song | null =
-    typeof selectedIndex === "number" ? songList[selectedIndex] : null;
+  const selectedSong: Song | null = typeof selectedIndex === "number" ? songList[selectedIndex] : null;
 
-//// Tempo Blink  (/TODO Extract in a components ?)
-
-  // Tempo LED (blinks at BPM)
+  // Tempo LED (blink à BPM)
   const [isTempoTickOn, setIsTempoTickOn] = useState(false);
   const bpmRef = useRef<number | undefined>(undefined);
 
@@ -124,66 +100,57 @@ export default function Grilles(): JSX.Element {
     };
 
     scheduleNextBlink();
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
+    return () => { if (timeoutId) clearTimeout(timeoutId); };
   }, [selectedSong?.bpm]);
 
+  // Lignes rendues (expand % + répétitions)
+const renderedLines = useMemo(() => {
+  if (!selectedSong) return [];
+  return (selectedSong.grille || []).map((gridLine) => ({
+    mesures: expandPercents(gridLine.mesures || []),
+    rep: Math.max(1, gridLine.repetitions ?? 1), // juste pour l'affichage du badge
+  }));
+}, [selectedSong]);
 
-  ///////
-
-
-  // Build render-ready lines (expanded % + repeated)
-  const renderedLines = useMemo(() => {
-    if (!selectedSong) return [];
-    const lineBlocks: { mesures: string[]; rep: number }[] = [];
-
-    for (const gridLine of selectedSong.grille) {
-      const expandedMeasures = expandPercents(gridLine.mesures || []);
-      const repetitionCount = Math.max(1, gridLine.repetitions ?? 1);
-      for (let repetitionIndex = 0; repetitionIndex < repetitionCount; repetitionIndex++) {
-        lineBlocks.push({ mesures: expandedMeasures, rep: repetitionCount });
-      }
-    }
-    return lineBlocks;
-  }, [selectedSong]);
-
-  // Sync URL when user picks a song in the <select>
+  // Sync URL quand on change de sélection
   useEffect(() => {
     if (typeof selectedIndex !== "number") return;
-    const selected = songList[selectedIndex];
-    if (!selected) return;
-
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set(QUERY_PARAM_SONG, selected.titre);
-    window.history.replaceState({}, "", currentUrl.toString());
+    const s = songList[selectedIndex];
+    if (!s) return;
+    const sp = new URLSearchParams(location.search);
+    sp.set(QUERY_PARAM_SONG, s.titre);
+    history.replaceState({}, "", `?${sp.toString()}`);
   }, [selectedIndex, songList]);
 
   return (
     <div className="scrollable">
-      {/* Selector */}
+      {/* Sélecteur */}
       <section id="selection-container">
         <h1>Choisis ton morceau</h1>
-        <select
-          id="selector"
-          value={selectedIndex}
-          onChange={(event) => {
-            const { value } = event.target;
-            setSelectedIndex(value === "" ? "" : Number(value));
-          }}
-        >
-          <option value="">-- Sélectionne un titre --</option>
-          {songList.map((songItem, songIndex) => (
-            <option key={songItem.titre} value={songIndex}>
-              {songItem.titre}
-              {songItem.tonalite ? ` — ${songItem.tonalite}` : ""}
-              {songItem.bpm ? ` (${songItem.bpm} BPM)` : ""}
-            </option>
-          ))}
-        </select>
+        {loading ? (
+          <div>Chargement…</div>
+        ) : (
+          <select
+            id="selector"
+            value={selectedIndex}
+            onChange={(e) => {
+              const { value } = e.target;
+              setSelectedIndex(value === "" ? "" : Number(value));
+            }}
+          >
+            <option value="">-- Sélectionne un titre --</option>
+            {songList.map((songItem, i) => (
+              <option key={`${songItem.titre}-${i}`} value={i}>
+                {songItem.titre}
+                {songItem.tonalite ? ` — ${songItem.tonalite}` : ""}
+                {typeof songItem.bpm === "number" ? ` (${songItem.bpm} BPM)` : ""}
+              </option>
+            ))}
+          </select>
+        )}
       </section>
 
-      {/* Grid */}
+      {/* Grille */}
       {selectedSong && (
         <section id="grille-section">
           <div id="morceau-infos">
@@ -195,45 +162,32 @@ export default function Grilles(): JSX.Element {
                 selectedSong.signature,
                 selectedSong.indication,
                 selectedSong.difficulte,
-              ]
-                .filter(Boolean)
-                .join(" • ")}
+              ].filter(Boolean).join(" • ")}
               {selectedSong.bpm ? ` • ${selectedSong.bpm} BPM` : ""}
             </p>
             <div id="tempo-led" className={isTempoTickOn ? "active" : ""} />
           </div>
 
           <div id="grille-container">
-            {renderedLines.map((renderedLine, lineIndex) => (
-              <div key={lineIndex} className="ligne">
-                {renderedLine.mesures.map((cellContent, cellIndex) => (
-                  <div key={cellIndex} className="cellule">
-                    {cellContent}
-                  </div>
+            {renderedLines.map((line, li) => (
+              <div key={li} className="ligne">
+                {line.mesures.map((cell, ci) => (
+                  <div key={ci} className="cellule">{cell}</div>
                 ))}
-                {renderedLine.rep > 1 && (
-                  <div className="repetition-badge">×{renderedLine.rep}</div>
-                )}
+                {line.rep > 1 && <div className="repetition-badge">×{line.rep}</div>}
               </div>
             ))}
           </div>
         </section>
       )}
-<div
-        style={{
-          position: "fixed",
-          top: 12,
-          right: 12,
-          zIndex: 1000,
-        }}
-      >
+
+      {/* EdgePeek overlay */}
+      <div style={{ position: "fixed", top: 12, right: 12, zIndex: 1000 }}>
         <EdgePeekSheet />
-   
       </div>
-      {/* Back button overlay */}
-      <Link to="/" id="navigation-overlay" aria-label="Retour à l’accueil">
-        ⬅️
-      </Link>
+
+      {/* Back button */}
+      <Link to="/" id="navigation-overlay" aria-label="Retour à l’accueil">⬅️</Link>
     </div>
   );
 }
