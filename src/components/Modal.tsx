@@ -28,9 +28,9 @@ export default function Modal({ open, onClose, children }: Props) {
         onClick={(e) => e.stopPropagation()}
         style={{
           width: "min(92vw, 440px)",
-          background: "rgba(255,255,255,0.95)",
+          background: "rgba(117, 6, 111, 0)",
           borderRadius: 14,
-          boxShadow: "0 18px 48px rgba(0,0,0,0.35)",
+          boxShadow: "0 18px 48px rgba(0, 0, 0, 0)",
           padding: 12,
         }}
       >

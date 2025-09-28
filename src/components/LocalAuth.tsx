@@ -198,6 +198,7 @@ export default function LocalAuth({
       <div style={cardStyle}>
         <div style={{ marginBottom: 8, opacity: 0.8 }}>Connecté en local</div>
         <div style={{ fontWeight: 600 }}>{existing.userName}</div>
+        
         <button onClick={handleLogout} style={btnStyle}>Se déconnecter</button>
       </div>
     );
@@ -255,45 +256,66 @@ export default function LocalAuth({
   );
 }
 
-// ===== Styles inline minimalistes =====
+// ===== Styles "verre fumé" =====
 const cardStyle: React.CSSProperties = {
   width: "min(92vw, 420px)",
   margin: "12px auto",
-  padding: "12px 14px",
-  borderRadius: 12,
-  background: "rgba(255,255,255,0.9)",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+  padding: "14px 16px",
+  borderRadius: 14,
+  // noir semi-transparent + effet glass
+  background: "rgba(10, 10, 16, 0.55)",
+  backdropFilter: "blur(10px) saturate(120%)",
+  WebkitBackdropFilter: "blur(10px) saturate(120%)",
+  border: "1px solid rgba(255, 255, 255, 0.12)",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
   display: "flex",
   flexDirection: "column",
-  gap: 6
+  gap: 8,
+  color: "#EAEAEA" // texte lisible sur fond sombre
 };
-const labelStyle: React.CSSProperties = { fontSize: 12, opacity: 0.8, marginTop: 6 };
+
+const labelStyle: React.CSSProperties = {
+  fontSize: 12,
+  opacity: 0.85,
+  marginTop: 8
+};
+
 const inputStyle: React.CSSProperties = {
   padding: "10px 12px",
   borderRadius: 10,
-  border: "1px solid rgba(0,0,0,0.1)",
-  fontSize: 15
+  border: "1px solid rgba(255,255,255,0.12)",
+  background: "rgba(255,255,255,0.06)", // léger voile clair
+  color: "#F5F5F5",
+  fontSize: 15,
+  outline: "none",
+  // petit “focus ring” accessible
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)"
 };
+
 const btnStyle: React.CSSProperties = {
-  marginTop: 10,
+  marginTop: 12,
   padding: "10px 12px",
   borderRadius: 10,
-  border: "1px solid rgba(0,0,0,0.15)",
-  background: "white",
+  border: "1px solid rgba(255,255,255,0.16)",
+  background: "rgba(255,255,255,0.12)", // bouton sombre translucide
+  color: "#FFF",
   fontSize: 15,
   cursor: "pointer"
 };
+
 const tabStyle: React.CSSProperties = {
   flex: 1,
   padding: "8px 10px",
-  borderRadius: 8,
-  border: "1px solid rgba(0,0,0,0.1)",
-  background: "white",
+  borderRadius: 10,
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(255,255,255,0.08)",
+  color: "#EEE",
   cursor: "pointer",
   fontSize: 13
 };
+
 const tabActive: React.CSSProperties = {
-  background: "black",
-  color: "white",
-  borderColor: "black"
+  background: "rgba(0,0,0,0.5)",
+  color: "#FFF",
+  borderColor: "rgba(255,255,255,0.24)"
 };

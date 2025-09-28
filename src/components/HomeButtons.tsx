@@ -165,7 +165,7 @@ const AccueilSketch: React.FC = () => {
         }
 
         p.push();
-        p.textFont("Baloo 2");
+        p.textFont("Baloo 2",5);
         p.textSize(36);
         p.fill(0,180); p.text("Loloup Jam LIVE", p.width/2 + 2, 34);
         p.fill(255);   p.text("Loloup Jam LIVE", p.width/2, 32);

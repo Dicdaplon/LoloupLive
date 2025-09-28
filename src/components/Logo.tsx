@@ -180,9 +180,9 @@ const showMessage = () => {
     border-radius: 12px;
     font-family: "Baloo 2", system-ui, sans-serif;
     font-size: 14px;
-    color: #000;
-    background: rgba(255,255,255,0.92);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.25), 0 0 24px rgba(0,240,255,0.5);
+    color: #ffffffff;
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25), 0 0 24px rgba(0, 238, 255, 1);
     backdrop-filter: blur(2px);
     transform: translate3d(0,0,0);  /* <- stabilise le rendu */
     will-change: opacity;           /* <- on n'anime plus transform */

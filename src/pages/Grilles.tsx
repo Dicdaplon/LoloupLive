@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 // Vite/TS can import JSON directly
 import data from "../data/tablatures.json";
-
+import   
+  EdgePeekSheet
+ from '../components/Overlay'
 /* ================================
  * Constants
  * ================================ */
@@ -99,6 +101,8 @@ export default function Grilles(): JSX.Element {
   const selectedSong: Song | null =
     typeof selectedIndex === "number" ? songList[selectedIndex] : null;
 
+//// Tempo Blink  (/TODO Extract in a components ?)
+
   // Tempo LED (blinks at BPM)
   const [isTempoTickOn, setIsTempoTickOn] = useState(false);
   const bpmRef = useRef<number | undefined>(undefined);
@@ -124,6 +128,10 @@ export default function Grilles(): JSX.Element {
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [selectedSong?.bpm]);
+
+
+  ///////
+
 
   // Build render-ready lines (expanded % + repeated)
   const renderedLines = useMemo(() => {
@@ -211,7 +219,17 @@ export default function Grilles(): JSX.Element {
           </div>
         </section>
       )}
-
+<div
+        style={{
+          position: "fixed",
+          top: 12,
+          right: 12,
+          zIndex: 1000,
+        }}
+      >
+        <EdgePeekSheet />
+   
+      </div>
       {/* Back button overlay */}
       <Link to="/" id="navigation-overlay" aria-label="Retour à l’accueil">
         ⬅️

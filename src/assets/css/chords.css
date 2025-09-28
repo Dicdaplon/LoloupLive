@@ -10,7 +10,7 @@ main {
   border-radius: 50%;
   margin: 0.5rem auto;
   background: #444;
-  transition: background 0.1s;
+  transition: background 0.3s;
 }
 #tempo-led.active {
   background: #41ead4;
@@ -58,30 +58,39 @@ body.scrollable {
   overflow-y: auto;
 }
 
-
-@media screen and (orientation: portrait) {
-
-
     #selection-container {
   text-align: center;
-  padding: 0.5rem 0.5rem;
-  margin-top: 0.5vh;
   backdrop-filter: blur(8px);
   background: rgba(129, 129, 129, 0.123);
   border-radius: 2rem;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
   z-index: 1;
 }
 
 #selector {
+  text-align: center;
   padding: 1vh 1vh;
   font-size: 1rem;
   border: none;
   border-radius: 0.5rem;
   background: #222;
   color: white;
+}
+
+@media screen and (orientation: portrait) {
+
+
+  #selection-container {
+  padding: 0.5rem 0.5rem;
+  margin-top: 0.5vh;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#selector {
+  padding: 1vh 1vh;
+  border: none;
+  border-radius: 0.5rem;
 }
 
 #grille-section {
@@ -100,6 +109,7 @@ body.scrollable {
   margin-bottom: 2rem;
   align-items: center;
   justify-content: center;
+   position: relative; 
 }
 
 .cellule {
@@ -108,8 +118,8 @@ body.scrollable {
   border-radius: 12px;
   background: rgba(173, 194, 57, 0.267);
   font-family: monospace;
-  font-size: 0.8rem;
-  min-width: 5ch;
+  font-size: 1.2rem;
+  min-width: 3ch;
   text-align: center;
   box-shadow: 0 0 10px rgba(255,255,255,0.2);
   transition: transform 0.2s ease;
@@ -155,26 +165,18 @@ body.scrollable {
 
 @media screen and (orientation: landscape) {
 
-    #selection-container {
-  text-align: center;
+  #selection-container {
   padding: 0.8rem 1rem;
   margin-top: 1vh;
-  backdrop-filter: blur(8px);
-  background: rgba(129, 129, 129, 0.123);
-  border-radius: 1rem;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
-  z-index: 1;
 }
 
 #selector {
   padding: 1vh 1vh;
-  font-size: 2rem;
   border: none;
   border-radius: 0.5rem;
-  background: #222;
-  color: white;
 }
 #grille-section {
   display: flex;
@@ -192,15 +194,16 @@ body.scrollable {
   margin-bottom: 1.5rem;
   align-items: center;
   justify-content: center;
+   position: relative; 
 }
 
 .cellule {
   border: 2px solid #ff85f9a1;
-  padding: 0.5rem 0.1rem;
+  padding: 0.1rem 0.1rem;
   border-radius: 12px;
   background: rgba(173, 194, 57, 0.267);
   font-family: monospace;
-  font-size:2.5rem;
+  font-size:2.3rem;
   min-width: 5ch;
   text-align: center;
   box-shadow: 0 0 10px rgba(255,255,255,0.2);

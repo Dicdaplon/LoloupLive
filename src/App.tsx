@@ -5,6 +5,8 @@ import Info from './pages/Info'
 import AppLayout from './components/AppLayout'
 import Grilles from './pages/Grilles'
 import ThreeTest from './devTest/ThreeTest';
+import PixiTest from './devTest/PixiTest';
+import UploadChordsRTDB from './pages/UploadChords'
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
          <Route path="/info" element={<Info />} />
          <Route path="/grilles" element={<Grilles />} />
          <Route path="/threeTest" element={<ThreeTest />} />
+         <Route path="/pixiTest" element={<PixiTest />} />
+         <Route path="/uploadChords" element={<UploadChordsRTDB />} />
          </Route>
       </Routes>
     </div>
