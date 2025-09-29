@@ -7,7 +7,7 @@ import Grilles from './pages/Grilles'
 import ThreeTest from './devTest/ThreeTest';
 import PixiTest from './devTest/PixiTest';
 import UploadChordsRTDB from './pages/UploadChords'
-import UploadLyricsRTDB from './pages/uploadLyrics'
+import UploadLyricsRTDB from './pages/UploadLyrics'
 
 export default function App() {
   return (

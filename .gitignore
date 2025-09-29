@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+LoloupLive.7z
+LoloupLive.zip
 
 # Editor directories and files
 .vscode/*

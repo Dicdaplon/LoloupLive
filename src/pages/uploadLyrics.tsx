@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { db } from "@/lib/firebase/app";
+import { db } from "@/lib/firebase/databaseConfiguration";
 import { ref, get, set } from "firebase/database";
 
 function slugify(input: string): string {

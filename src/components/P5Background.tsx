@@ -41,7 +41,7 @@ export default function P5Background() {
         }
         display() {
           p.push()
-          p.textFont('Georgia')
+          p.textFont('Georgia',25)
           p.noStroke()
           p.fill(p.red(this.color), p.green(this.color), p.blue(this.color), this.alpha)
           p.textSize(this.size)
@@ -93,8 +93,8 @@ export default function P5Background() {
       style={{
         position: 'fixed',
         inset: '0',
-        zIndex: -5,          // le contenu doit avoir un z-index plus haut
-        pointerEvents: 'none', // le fond ne capte pas les clics
+        zIndex: -5,         
+        pointerEvents: 'none', 
       }}
     />
   )

@@ -3,7 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/css/overlay.css";
-import UploadLyricsRTDB from "../pages/uploadLyrics"
+import UploadLyricsRTDB from "../pages/UploadLyrics"
 
 
 export default function OverlayLyrics() {

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import EdgePeekSheet from "../components/Overlay";
 
-import { db } from "@/lib/firebase/app";         // ← RTDB
+import { db } from "@/lib/firebase/databaseConfiguration";         // ← RTDB
 import { ref, onValue } from "firebase/database";
 
 /* ================================

@@ -1,5 +1,5 @@
 // chatService.ts
-import { db } from "../../lib/firebase/app";
+import { db } from "../../lib/firebase/databaseConfiguration";
 import {
   ref, push, set, onChildAdded, get, query,
   orderByChild, startAt, endAt, DataSnapshot, serverTimestamp

@@ -44,7 +44,7 @@ main {
 .rep {
   margin-left: 1rem;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'Baloo 2', sans-serif;;
   font-size: 2rem;
   color: #ff9;
 }
@@ -117,8 +117,8 @@ body.scrollable {
   padding: 0.5rem 1rem;
   border-radius: 12px;
   background: rgba(173, 194, 57, 0.267);
-  font-family: monospace;
-  font-size: 1.2rem;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 5vw;
   min-width: 3ch;
   text-align: center;
   box-shadow: 0 0 10px rgba(255,255,255,0.2);
@@ -150,7 +150,7 @@ body.scrollable {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
-  font-family: monospace;
+  font-family: 'Baloo 2', sans-serif;;
 }
 
 #grille-container {
@@ -202,8 +202,8 @@ body.scrollable {
   padding: 0.1rem 0.1rem;
   border-radius: 12px;
   background: rgba(173, 194, 57, 0.267);
-  font-family: monospace;
-  font-size:2.3rem;
+  font-family: 'Baloo 2', sans-serif;;
+  font-size:5vw;
   min-width: 5ch;
   text-align: center;
   box-shadow: 0 0 10px rgba(255,255,255,0.2);
@@ -235,7 +235,7 @@ body.scrollable {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
-  font-family: monospace;
+  font-family: 'Baloo 2', sans-serif;;
 }
 
 #grille-container {

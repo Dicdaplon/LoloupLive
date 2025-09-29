@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { db } from "@/lib/firebase/app";
+import { db } from "@/lib/firebase/databaseConfiguration";
 import { ref, onValue } from "firebase/database";
 import OverlayLyrics from "../components/OverlayLyrics"
 

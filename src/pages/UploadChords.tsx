@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { db } from "@/lib/firebase/app";
+import { db } from "@/lib/firebase/databaseConfiguration";
 import { ref, set, get } from "firebase/database";
 
+
+// -Constants 
+
+const MAXMEASURESDIPLAYED = 16;
+const MAXDIFFERENTPARTS = 3;
 // ── Types / helpers ──────────────────────────────────────────────────────────
 type MesureBlock = { mesures: string[]; repetitions?: number };
 type ChordDoc = {
@@ -15,6 +20,12 @@ type ChordDoc = {
   updatedAt?: number;
 };
 
+/**
+ * Convert a string into a "slug" (no special characters) safe for use in URLs and Firebase RTDB keys.
+ *
+ * @param input Any string 
+ * @returns A URL- and RTDB-safe slug, "Été déjà là" → "ete-deja-la"
+ */
 function slugify(input: string): string {
   return String(input ?? "")
     .toLowerCase()
