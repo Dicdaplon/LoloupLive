@@ -7,6 +7,7 @@ import Grilles from './pages/Grilles'
 import ThreeTest from './devTest/ThreeTest';
 import PixiTest from './devTest/PixiTest';
 import UploadChordsRTDB from './pages/UploadChords'
+import UploadLyricsRTDB from './pages/uploadLyrics'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
          <Route path="/threeTest" element={<ThreeTest />} />
          <Route path="/pixiTest" element={<PixiTest />} />
          <Route path="/uploadChords" element={<UploadChordsRTDB />} />
+         <Route path="/uploadLyrics" element={<UploadLyricsRTDB />} />
          </Route>
       </Routes>
     </div>

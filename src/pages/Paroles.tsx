@@ -1,73 +1,74 @@
-import React, { useMemo, useState, useEffect } from "react";
-import P5Background from '../components/P5Background'
+import React, { useEffect, useMemo, useState } from "react";
+import { db } from "@/lib/firebase/app";
+import { ref, onValue } from "firebase/database";
+import OverlayLyrics from "../components/OverlayLyrics"
 
-// 1) Charge toutes les paroles *.txt en RAW via Vite
-//    -> clés = chemins (ex: "/src/data/paroles/All_of_me.txt")
-//    -> valeurs = contenu du fichier
-const parolesModules = import.meta.glob("../assets/paroles/*.txt", {
-  as: "raw",
-  eager: true,
-}) as Record<string, string>;
-
-type Option = {
-  key: string;      // clé du glob (chemin)
-  title: string;    // titre affiché dans le select
-  filename: string; // nom de fichier
+// format RTDB: /lyrics/<id> → { title?: string, lyrics: string, updatedAt?: number }
+type LyricDoc = {
+  title?: string;
+  lyrics: string;
+  updatedAt?: number;
 };
 
-
-function filenameToTitle(name: string) {
-  // "All_of_me.txt" -> "All of me"
-  const base = name.replace(/\.txt$/i, "");
-  return base.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+function slugify(input: string): string {
+  return String(input ?? "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
-export default function Paroles() {
-  // 2) Options dérivées des fichiers trouvés
-  const options: Option[] = useMemo(() => {
-    return Object.keys(parolesModules)
-      .map((key) => {
-        const filename = key.split("/").pop() || key;
-        return {
-          key,
-          filename,
-          title: filenameToTitle(filename),
-        };
-      })
-      .sort((a, b) => a.title.localeCompare(b.title));
+
+export default function ParolesRTDB() {
+  const [list, setList] = useState<Array<{ id: string; data: LyricDoc }>>([]);
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  // charge /lyrics
+  useEffect(() => {
+    const r = ref(db, "lyrics");
+    const off = onValue(r, (snap) => {
+      const val = (snap.val() || {}) as Record<string, LyricDoc>;
+      const arr = Object.entries(val).map(([id, data]) => ({ id, data }));
+      arr.sort((a, b) => (a.data.title || a.id).localeCompare(b.data.title || b.id));
+      setList(arr);
+    });
+    return () => off();
   }, []);
 
-  // 3) Sélection initiale depuis l’URL ?song= (facultatif)
-  const [selectedKey, setSelectedKey] = useState<string>("");
-
+  // lecture param ?song= (peut être id ou titre)
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const q = url.searchParams.get("song");
-    if (q) {
-      const match = options.find(
-        (o) =>
-          o.filename.toLowerCase() === q.toLowerCase() ||
-          o.title.toLowerCase() === q.toLowerCase()
-      );
-      if (match) {
-        setSelectedKey(match.key);
-        return;
-      }
-    }
-    // Par défaut: rien sélectionné (on garde le placeholder)
-  }, [options]);
+    if (!list.length) return;
+    const sp = new URLSearchParams(location.search);
+    const q = sp.get("song");
+    if (!q) return;
+    const slugQ = slugify(q);
+    const hit = list.find(
+      (x) => x.id.toLowerCase() === slugQ || slugify(x.data.title || "") === slugQ
+    );
+    if (hit) setSelectedId(hit.id);
+  }, [list]);
 
-  // 4) Contenu courant
-  const content = selectedKey ? parolesModules[selectedKey] : "";
+  const current = useMemo(
+    () => list.find((x) => x.id === selectedId)?.data || null,
+    [list, selectedId]
+  );
 
-  // 5) Sync de l’URL (optionnel mais pratique)
+  // sync URL quand on change
   useEffect(() => {
-    if (!selectedKey) return;
-    const opt = options.find((o) => o.key === selectedKey);
-    if (!opt) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("song", opt.filename);
-    window.history.replaceState({}, "", url.toString());
-  }, [selectedKey, options]);
+    if (!selectedId) return;
+    const item = list.find((x) => x.id === selectedId);
+    const label = item?.data.title || selectedId;
+    const sp = new URLSearchParams(location.search);
+    sp.set("song", label);
+    history.replaceState({}, "", `?${sp.toString()}`);
+  }, [selectedId, list]);
+
+  // --- Rendu par paragraphes (≥ une ligne vide = nouveau paragraphe) ---
+  const neonClasses = ["paroles-neonA", "paroles-neonB", "paroles-neonC"];
+  const paragraphs = useMemo(() => {
+    const raw = current?.lyrics ?? "";
+    // coupe sur une OU plusieurs lignes vides (éventuels espaces)
+    return raw.split(/\r?\n\s*\r?\n/g).map((block) => block.split(/\r?\n/));
+  }, [current?.lyrics]);
 
   return (
     <section id="paroles-section" className="scrollable">
@@ -76,33 +77,48 @@ export default function Paroles() {
       <div id="selection-container-paroles">
         <select
           id="selector-paroles"
-          value={selectedKey}
-          onChange={(e) => setSelectedKey(e.target.value)}
+          value={selectedId}
+          onChange={(e) => setSelectedId(e.target.value)}
         >
           <option value="" disabled>
-            -- Choisis un morceau --
+            -- Choisis un titre --
           </option>
-          {options.map((o) => (
-            <option key={o.key} value={o.key}>
-              {o.title}
+          {list.map(({ id, data }) => (
+            <option key={id} value={id}>
+              {data.title || id}
             </option>
           ))}
         </select>
       </div>
 
-      <pre id="contenu-paroles" className="paroles">
-        {content || ""}
-      </pre>
+      {/* rendu: couleur par PARAGRAPHE (cycle A/B/C) */}
+      <div id="contenu-paroles">
+        {paragraphs.map((lines, pi) => {
+          const klass = neonClasses[pi % neonClasses.length];
+          return (
+            <div key={`p-${pi}`} style={{ marginBottom: "0.5rem" }}>
+              {lines.map((ln, li) => (
+                <div
+                  key={`p-${pi}-l-${li}`}
+                  className={klass}
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
+                  {ln === "" ? "\u00A0" : ln}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+         {/* EdgePeek overlay */}
+            <div style={{ position: "fixed", top: 12, right: 12, zIndex: 1000 }}>
+              <OverlayLyrics />
+            </div>
+      
 
-      {/* Lien retour (même id que l’ancien overlay si tu as du CSS) */}
       <a href="/index.html" id="navigation-overlay" aria-label="Retour">
         ⬅️
       </a>
-    
     </section>
-
-
-    
-    
   );
 }
