@@ -71,12 +71,12 @@ export default function ParolesRTDB() {
   }, [current?.lyrics]);
 
   return (
-    <section id="paroles-section" className="scrollable">
+    <section id="section" className="scrollable">
       <h1>🎤 Paroles</h1>
 
-      <div id="selection-container-paroles">
+      <div id="selection-container">
         <select
-          id="selector-paroles"
+          id="selector"
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
         >
