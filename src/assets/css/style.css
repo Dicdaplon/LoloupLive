@@ -52,9 +52,9 @@ h1 {
 
   #logo {
   position: absolute;
-  top: 55vh;
-  left: -10vw;
-  width:  40vh;
+  top: 70vh;
+  left: 10vw;
+  width:  15vh;
   filter: drop-shadow(0 0 5px #0ff)
           drop-shadow(0 0 10px #0ff)
           drop-shadow(0 0 20px #0ff);
@@ -82,9 +82,9 @@ h1 {
 
   #logo {
   position: absolute;
-  top:53vh;
-  left: 8vw;
-  width: 20vw;
+  top:65vh;
+  left: 3vw;
+  width: 10vw;
   filter: drop-shadow(0 0 5px #0ff)
           drop-shadow(0 0 10px #0ff)
           drop-shadow(0 0 20px #0ff);

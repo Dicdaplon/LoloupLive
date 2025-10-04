@@ -9,6 +9,7 @@ import PixiTest from './devTest/PixiTest';
 import UploadChordsRTDB from './pages/UploadChords';
 import UploadLyricsRTDB from './pages/UploadLyrics';
 import CameraSnapClassic from './pages/CameraCapture';
+import LoloupBox from './pages/LoloupBox';
 import Compteur from './pages/game';
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/uploadLyrics" element={<UploadLyricsRTDB />} />
           <Route path="/compteur" element={<Compteur />} />
           <Route path="/cameraCapture" element={<CameraSnapClassic />} />
+          <Route path="/loloupBox" element={<LoloupBox />} />
         </Route>
       </Routes>
     </div>

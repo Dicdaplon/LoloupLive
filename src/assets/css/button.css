@@ -16,6 +16,7 @@
   text-align: center;
   color: var(--color-text);
   text-shadow: var(--glow-purple);
+  animation: titlePulse 15s ease-in-out infinite;
 }
 
 /* ====== Grille des boutons principaux ====== */
@@ -32,8 +33,10 @@
 /* Portrait: 1 colonne */
 @media (orientation: portrait) {
   .home__grid {
+    margin-top: 2vh;
     flex-direction: column;
      transform: translateY(0vh);
+     gap: 8vh;
   }
 }
 
@@ -67,7 +70,7 @@
   overflow: hidden;
   text-align: center;
   will-change: transform, filter;
-  animation: btnPulse 2.4s ease-in-out infinite;
+  animation: btnPulse 3s ease-in-out infinite;
 }
 
 .neon-btn:focus-visible {
@@ -107,15 +110,20 @@
 
 /* Pulse discret (respire) */
 @keyframes btnPulse {
-  0%, 100% { transform: translateY(0) scale(1);   filter: brightness(1); }
-  50%      { transform: translateY(-1px) scale(1.015); filter: brightness(1.06); }
+  0%, 100% { transform: translateY(0) scale(1);   filter: brightness(0.8); }
+  50%      { transform: translateY(-1px) scale(1.12); filter: brightness(1.15); }
 }
 
-/* ====== FAB Caméra (cercle néon) ====== */
-.cam-fab {
+@keyframes titlePulse {
+  0%,52%, 62%,100% { color: inherit  }
+  55%      { color: var(--color-yellow-bright); }
+}
+
+@media (orientation: portrait) {
+  .cam-fab {
   position: absolute;
   right: 10vw;
-  bottom: -10vh;
+  bottom: -5vw;
   width: clamp(54px, 8vw, 72px);
   height: clamp(54px, 8vw, 72px);
   border-radius: 50%;
@@ -131,7 +139,32 @@
   transition: transform .18s ease, background .25s ease, box-shadow .25s ease;
   z-index: 20;
   animation: fabPulse 2.8s ease-in-out infinite;
-}
+}}
+
+@media (orientation: landscape) {
+  .cam-fab {
+  position: fixed;
+  right: 10vw;
+  bottom: 15vh;
+  width: clamp(54px, 8vw, 72px);
+  height: clamp(54px, 8vw, 72px);
+  border-radius: 50%;
+  border: 2px solid var(--color-cyan-base);
+  background: rgba(0,0,0,0.35);
+  color: var(--color-cyan-light);
+  /* centrer strictement le contenu */
+  display: grid;
+  place-items: center;
+  line-height: 0;                /* ⬅️ tue la baseline des glyphes */
+  box-shadow: var(--glow-cyan);
+  cursor: pointer;
+  transition: transform .18s ease, background .25s ease, box-shadow .25s ease;
+  z-index: 20;
+  animation: fabPulse 2.8s ease-in-out infinite;
+}}
+
+
+
 
 /* on dessine l’emoji ici pour pouvoir l’aligner finement */
 .cam-fab::before {
@@ -140,7 +173,7 @@
   font-size: clamp(1.2rem, 3.2vw, 1.6rem);
   line-height: 1;                /* boîte de l’emoji = carré propre */
   transform: translateY(-25%);     /* micro-ajustement visuel */
-  transform: translateX(-47%);  
+  transform: translateX(-49%);  
 }
 
 @keyframes fabPulse {
