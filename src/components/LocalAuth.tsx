@@ -1,47 +1,47 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from 'react';
 
 // ===== Helpers WebCrypto =====
-async function sha256PBKDF2(password: string, saltB64: string, iterations: number): Promise<string> {
+async function sha256PBKDF2(
+  password: string,
+  saltB64: string,
+  iterations: number
+): Promise<string> {
   const enc = new TextEncoder();
-  const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+  const salt = Uint8Array.from(atob(saltB64), (c) => c.charCodeAt(0));
 
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(password),
-    "PBKDF2",
-    false,
-    ["deriveBits"]
-  );
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, [
+    'deriveBits',
+  ]);
 
   const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", hash: "SHA-256", salt, iterations },
+    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations },
     keyMaterial,
     256 // 256 bits => 32 bytes
   );
 
   // ArrayBuffer -> base64
   const bytes = new Uint8Array(bits);
-  let bin = "";
-  bytes.forEach(b => (bin += String.fromCharCode(b)));
+  let bin = '';
+  bytes.forEach((b) => (bin += String.fromCharCode(b)));
   return btoa(bin);
 }
 
 function randomSaltB64(len = 16): string {
   const salt = new Uint8Array(len);
   crypto.getRandomValues(salt);
-  let bin = "";
-  salt.forEach(b => (bin += String.fromCharCode(b)));
+  let bin = '';
+  salt.forEach((b) => (bin += String.fromCharCode(b)));
   return btoa(bin);
 }
 
 function uuid(): string {
   // UUID v4 simple
-  if ("randomUUID" in crypto) return crypto.randomUUID();
+  if ('randomUUID' in crypto) return crypto.randomUUID();
   const a = new Uint8Array(16);
   crypto.getRandomValues(a);
   a[6] = (a[6] & 0x0f) | 0x40;
   a[8] = (a[8] & 0x3f) | 0x80;
-  const h = Array.from(a, b => b.toString(16).padStart(2, "0"));
+  const h = Array.from(a, (b) => b.toString(16).padStart(2, '0'));
   return `${h[0]}${h[1]}${h[2]}${h[3]}-${h[4]}${h[5]}-${h[6]}${h[7]}-${h[8]}${h[9]}-${h[10]}${h[11]}${h[12]}${h[13]}${h[14]}${h[15]}`;
 }
 
@@ -49,13 +49,13 @@ function uuid(): string {
 type LocalUser = {
   userId: string;
   userName: string;
-  salt: string;          // base64
-  iterations: number;    // e.g., 120_000
-  hashB64: string;       // PBKDF2-SHA256(password, salt, iterations) en base64
-  algo: "PBKDF2-SHA256";
+  salt: string; // base64
+  iterations: number; // e.g., 120_000
+  hashB64: string; // PBKDF2-SHA256(password, salt, iterations) en base64
+  algo: 'PBKDF2-SHA256';
 };
 
-const STORAGE_KEY = "jam.localUser";
+const STORAGE_KEY = 'jam.localUser';
 
 function loadLocalUser(): LocalUser | null {
   try {
@@ -69,37 +69,33 @@ function loadLocalUser(): LocalUser | null {
 function saveLocalUser(u: LocalUser) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
   // Compat avec ton chat:
-  localStorage.setItem("uid", u.userId);
-  localStorage.setItem("name", u.userName);
+  localStorage.setItem('uid', u.userId);
+  localStorage.setItem('name', u.userName);
 }
 
 function clearLocalUser() {
   localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem("uid");
-  localStorage.removeItem("name");
+  localStorage.removeItem('uid');
+  localStorage.removeItem('name');
 }
 
 // ===== Composant =====
 type Props = {
   onAuth?: (user: { userId: string; userName: string }) => void;
   /** Désactive l’auto-notification quand un utilisateur existe déjà (utile en modal) */
-  autoNotifyExisting?: boolean;        // NEW
+  autoNotifyExisting?: boolean; // NEW
   /** Force l’onglet “login” ou “signup” à l’ouverture */
-  initialMode?: "login" | "signup";    // NEW
+  initialMode?: 'login' | 'signup'; // NEW
 };
 
-export default function LocalAuth({
-  onAuth,
-  autoNotifyExisting = true,
-  initialMode,
-}: Props) {
+export default function LocalAuth({ onAuth, autoNotifyExisting = true, initialMode }: Props) {
   const existing0 = loadLocalUser();
   const [existing, setExisting] = useState<LocalUser | null>(existing0);
-  const [mode, setMode] = useState<"login" | "signup">(
-    initialMode ?? (existing0 ? "login" : "signup")
+  const [mode, setMode] = useState<'login' | 'signup'>(
+    initialMode ?? (existing0 ? 'login' : 'signup')
   );
-  const [userName, setUserName] = useState(existing0?.userName ?? "");
-  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState(existing0?.userName ?? '');
+  const [password, setPassword] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -115,7 +111,7 @@ export default function LocalAuth({
     e.preventDefault();
     setError(null);
     if (!userName.trim() || !password) {
-      setError("Pseudo et mot de passe requis.");
+      setError('Pseudo et mot de passe requis.');
       return;
     }
     try {
@@ -128,12 +124,12 @@ export default function LocalAuth({
         salt,
         iterations,
         hashB64,
-        algo: "PBKDF2-SHA256",
+        algo: 'PBKDF2-SHA256',
       };
       saveLocalUser(user);
       setExisting(user);
-      setMode("login");
-      setPassword("");
+      setMode('login');
+      setPassword('');
       if (onAuth) onAuth({ userId: user.userId, userName: user.userName });
     } catch (err) {
       console.error(err);
@@ -148,19 +144,19 @@ export default function LocalAuth({
     setError(null);
     const u = loadLocalUser();
     if (!u) {
-      setError("Aucun compte local. Crée un compte d’abord.");
-      setMode("signup");
+      setError('Aucun compte local. Crée un compte d’abord.');
+      setMode('signup');
       return;
     }
     if (!password) {
-      setError("Mot de passe requis.");
+      setError('Mot de passe requis.');
       return;
     }
     try {
       setPending(true);
       const computed = await sha256PBKDF2(password, u.salt, u.iterations);
       if (computed !== u.hashB64) {
-        setError("Mot de passe invalide.");
+        setError('Mot de passe invalide.');
         return;
       }
       // on autorise la mise à jour du pseudo si modifié
@@ -174,10 +170,10 @@ export default function LocalAuth({
         setExisting(u);
         if (onAuth) onAuth({ userId: u.userId, userName: u.userName });
       }
-      setPassword("");
+      setPassword('');
     } catch (err) {
       console.error(err);
-      setError("Échec de la connexion.");
+      setError('Échec de la connexion.');
     } finally {
       setPending(false);
     }
@@ -186,38 +182,40 @@ export default function LocalAuth({
   function handleLogout() {
     clearLocalUser();
     setExisting(null);
-    setUserName("");
-    setPassword("");
-    setMode("signup");
-    if (onAuth) onAuth({ userId: "", userName: "" });
+    setUserName('');
+    setPassword('');
+    setMode('signup');
+    if (onAuth) onAuth({ userId: '', userName: '' });
   }
 
   // UI ultra simple
-  if (existing && mode === "login") {
+  if (existing && mode === 'login') {
     return (
       <div style={cardStyle}>
         <div style={{ marginBottom: 8, opacity: 0.8 }}>Connecté en local</div>
         <div style={{ fontWeight: 600 }}>{existing.userName}</div>
-        
-        <button onClick={handleLogout} style={btnStyle}>Se déconnecter</button>
+
+        <button onClick={handleLogout} style={btnStyle}>
+          Se déconnecter
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={mode === "signup" ? handleSignup : handleLogin} style={cardStyle}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+    <form onSubmit={mode === 'signup' ? handleSignup : handleLogin} style={cardStyle}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
         <button
           type="button"
-          onClick={() => setMode("signup")}
-          style={{ ...tabStyle, ...(mode === "signup" ? tabActive : {}) }}
+          onClick={() => setMode('signup')}
+          style={{ ...tabStyle, ...(mode === 'signup' ? tabActive : {}) }}
         >
           Créer un compte
         </button>
         <button
           type="button"
-          onClick={() => setMode("login")}
-          style={{ ...tabStyle, ...(mode === "login" ? tabActive : {}) }}
+          onClick={() => setMode('login')}
+          style={{ ...tabStyle, ...(mode === 'login' ? tabActive : {}) }}
         >
           Se connecter
         </button>
@@ -238,15 +236,15 @@ export default function LocalAuth({
         onChange={(e) => setPassword(e.target.value)}
         type="password"
         placeholder="········"
-        autoComplete={mode === "signup" ? "new-password" : "current-password"}
-        enterKeyHint={mode === "signup" ? "done" : "go"}
+        autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+        enterKeyHint={mode === 'signup' ? 'done' : 'go'}
         style={inputStyle}
       />
 
-      {error && <div style={{ color: "#ff4d4f", fontSize: 12, marginTop: 6 }}>{error}</div>}
+      {error && <div style={{ color: '#ff4d4f', fontSize: 12, marginTop: 6 }}>{error}</div>}
 
       <button disabled={pending} style={btnStyle}>
-        {pending ? "…" : mode === "signup" ? "Créer" : "Se connecter"}
+        {pending ? '…' : mode === 'signup' ? 'Créer' : 'Se connecter'}
       </button>
 
       <div style={{ fontSize: 11, opacity: 0.7, marginTop: 8 }}>
@@ -258,64 +256,64 @@ export default function LocalAuth({
 
 // ===== Styles "verre fumé" =====
 const cardStyle: React.CSSProperties = {
-  width: "min(92vw, 420px)",
-  margin: "12px auto",
-  padding: "14px 16px",
+  width: 'min(92vw, 420px)',
+  margin: '12px auto',
+  padding: '14px 16px',
   borderRadius: 14,
   // noir semi-transparent + effet glass
-  background: "rgba(10, 10, 16, 0.55)",
-  backdropFilter: "blur(10px) saturate(120%)",
-  WebkitBackdropFilter: "blur(10px) saturate(120%)",
-  border: "1px solid rgba(255, 255, 255, 0.12)",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-  display: "flex",
-  flexDirection: "column",
+  background: 'rgba(10, 10, 16, 0.55)',
+  backdropFilter: 'blur(10px) saturate(120%)',
+  WebkitBackdropFilter: 'blur(10px) saturate(120%)',
+  border: '1px solid rgba(255, 255, 255, 0.12)',
+  boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+  display: 'flex',
+  flexDirection: 'column',
   gap: 8,
-  color: "#EAEAEA" // texte lisible sur fond sombre
+  color: '#EAEAEA', // texte lisible sur fond sombre
 };
 
 const labelStyle: React.CSSProperties = {
   fontSize: 12,
   opacity: 0.85,
-  marginTop: 8
+  marginTop: 8,
 };
 
 const inputStyle: React.CSSProperties = {
-  padding: "10px 12px",
+  padding: '10px 12px',
   borderRadius: 10,
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(255,255,255,0.06)", // léger voile clair
-  color: "#F5F5F5",
+  border: '1px solid rgba(255,255,255,0.12)',
+  background: 'rgba(255,255,255,0.06)', // léger voile clair
+  color: '#F5F5F5',
   fontSize: 15,
-  outline: "none",
+  outline: 'none',
   // petit “focus ring” accessible
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)"
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
 };
 
 const btnStyle: React.CSSProperties = {
   marginTop: 12,
-  padding: "10px 12px",
+  padding: '10px 12px',
   borderRadius: 10,
-  border: "1px solid rgba(255,255,255,0.16)",
-  background: "rgba(255,255,255,0.12)", // bouton sombre translucide
-  color: "#FFF",
+  border: '1px solid rgba(255,255,255,0.16)',
+  background: 'rgba(255,255,255,0.12)', // bouton sombre translucide
+  color: '#FFF',
   fontSize: 15,
-  cursor: "pointer"
+  cursor: 'pointer',
 };
 
 const tabStyle: React.CSSProperties = {
   flex: 1,
-  padding: "8px 10px",
+  padding: '8px 10px',
   borderRadius: 10,
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "rgba(255,255,255,0.08)",
-  color: "#EEE",
-  cursor: "pointer",
-  fontSize: 13
+  border: '1px solid rgba(255,255,255,0.14)',
+  background: 'rgba(255,255,255,0.08)',
+  color: '#EEE',
+  cursor: 'pointer',
+  fontSize: 13,
 };
 
 const tabActive: React.CSSProperties = {
-  background: "rgba(0,0,0,0.5)",
-  color: "#FFF",
-  borderColor: "rgba(255,255,255,0.24)"
+  background: 'rgba(0,0,0,0.5)',
+  color: '#FFF',
+  borderColor: 'rgba(255,255,255,0.24)',
 };

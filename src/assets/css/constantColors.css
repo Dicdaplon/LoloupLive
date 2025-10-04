@@ -1,0 +1,58 @@
+:root {
+  /* ====================
+     FONDS
+  ==================== */
+  --color-bg: #0d0d1a;         /* Fond principal très sombre */
+  --color-bg-alt: #1a1a2e;     /* Fond secondaire */
+  --color-bg-light: #2a2a40;   /* Variante un peu plus claire */
+
+  /* ====================
+     PINK
+  ==================== */
+  --color-pink-light: #ff7abf;   /* doux, pastel */
+  --color-pink-base: #ff2d95;    /* saturé */
+  --color-pink-bright: #ff0088;  /* néon hardcore */
+
+  /* ====================
+     CYAN
+  ==================== */
+  --color-cyan-light: #7ff6ff;   /* doux, clair */
+  --color-cyan-base: #00f0ff;    /* saturé */
+  --color-cyan-bright: #00e5ff;  /* néon pur */
+
+  /* ====================
+     PURPLE
+  ==================== */
+  --color-purple-light: #c48fff; /* pastel */
+  --color-purple-base: #a64dff;  /* saturé */
+  --color-purple-bright: #9400ff;/* néon électrique */
+
+  /* ====================
+     YELLOW
+  ==================== */
+  --color-yellow-light: #ffe680; /* doux, lisible */
+  --color-yellow-base: #ffd700;  /* saturé */
+  --color-yellow-bright: #ffea00;/* éclat soleil néon */
+
+  /* ====================
+     GREEN
+  ==================== */
+  --color-green-light: #9dff9d;  /* pastel néon */
+  --color-green-base: #39ff14;   /* saturé */
+  --color-green-bright: #00ff66; /* néon acide */
+
+  /* ====================
+     TEXTE
+  ==================== */
+  --color-text: #f0f0f0;
+  --color-text-dim: #aaa;
+
+  /* ====================
+     GLOWS
+  ==================== */
+  --glow-pink: 0 0 10px var(--color-pink-base), 0 0 20px var(--color-pink-base), 0 0 40px var(--color-pink-bright);
+  --glow-cyan: 0 0 10px var(--color-cyan-base), 0 0 20px var(--color-cyan-base), 0 0 40px var(--color-cyan-bright);
+  --glow-purple: 0 0 10px var(--color-purple-base), 0 0 20px var(--color-purple-base), 0 0 40px var(--color-purple-bright);
+  --glow-yellow: 0 0 10px var(--color-yellow-base), 0 0 20px var(--color-yellow-base), 0 0 40px var(--color-yellow-bright);
+  --glow-green: 0 0 10px var(--color-green-base), 0 0 20px var(--color-green-base), 0 0 40px var(--color-green-bright);
+}

@@ -1,18 +1,29 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+/* ================================
+ * Constants
+ * ================================ */
 
 const LEETCHI_URL =
-  "https://www.leetchi.com/fr/c/collectif-loloup-1954857?utm_source=copylink&utm_medium=social_sharing&utm_campaign=pot";
-const INSTA_URL = "https://www.instagram.com/loloup_prod/";
+  'https://www.leetchi.com/fr/c/collectif-loloup-1954857?utm_source=copylink&utm_medium=social_sharing&utm_campaign=pot';
+
+const INSTA_URL = 'https://www.instagram.com/loloup_prod/';
+
+/* ================================
+ * Component
+ * ================================ */
 
 /**
- * Page d'infos — version React avec CTA Leetchi + Instagram.
- * - Garde .scrollable, .info-content
- * - Ajoute un bloc CTA (don) en haut + bouton flottant
+ * Info page (React version) with Leetchi + Instagram CTAs.
+ * - Keeps existing classes: .scrollable, .info-content
+ * - Adds a top CTA (donation) block and a floating donate button
  */
-export default function Info() {
-  useEffect(() => {
-    // (Optionnel) injection du fond animé si besoin
+export default function Info(): JSX.Element
+{
+  useEffect(() =>
+  {
+    // (Optional) animated background injection if needed:
     // const script = document.createElement("script");
     // script.src = "/assets/js/visual/background.js";
     // script.async = true;
@@ -24,7 +35,7 @@ export default function Info() {
     <div className="scrollable">
       <div id="background-holder" />
 
-      {/* Styles locaux (légers) pour le CTA et les boutons */}
+      {/* Local styles (light footprint) for CTA and buttons */}
       <style>{`
         .cta-card {
           background: rgba(0,0,0,0.55);
@@ -74,7 +85,7 @@ export default function Info() {
           font-size: 0.9rem;
           opacity: 0.8;
         }
-        /* Bouton flottant (don) */
+        /* Floating donate button (optional if later enabled) */
         .floating-donate {
           position: fixed;
           right: 16px;
@@ -90,7 +101,7 @@ export default function Info() {
           box-shadow: 0 8px 28px rgba(0,0,0,0.35);
         }
         .floating-donate:hover { transform: translateY(-1px); }
-        /* Responsif */
+        /* Responsive layout */
         @media (min-width: 720px) {
           .cta-row {
             display: grid;
@@ -102,15 +113,16 @@ export default function Info() {
       `}</style>
 
       <main className="info-content">
-        {/* 💜 Bloc CTA Don */}
+        {/* 💜 Donation CTA block */}
         <section className="cta-card">
           <div className="cta-row">
             <div>
               <h2 className="cta-title">💜 Soutenir le collectif</h2>
               <p className="cta-text">
-                Contribue librement à la caisse commune pour le local, le matos
-                et nos prochaines jams. Chaque euro compte. Merci !
+                Contribue librement à la caisse commune pour le local, le matos et nos prochaines
+                jams. Chaque euro compte. Merci&nbsp;!
               </p>
+
               <div className="cta-actions">
                 <a
                   className="btn-pill btn-donate"
@@ -121,6 +133,7 @@ export default function Info() {
                 >
                   🎁 Contribuer sur Leetchi
                 </a>
+
                 <a
                   className="btn-pill btn-insta"
                   href={INSTA_URL}
@@ -131,13 +144,14 @@ export default function Info() {
                   📸 Suivre @loloup_prod
                 </a>
               </div>
+
               <p className="fine" style={{ marginTop: 8 }}>
-                Pas de montant imposé — don au nom du collectif (pot hébergé via
-                Leetchi).
+                Pas de montant imposé — don au nom du collectif (pot hébergé via Leetchi).
               </p>
             </div>
-            {/* (Optionnel) Zone QR si tu ajoutes une image plus tard */}
-            {/* <img src="/assets/img/qr-leetchi.png" alt="QR code Leetchi" width={120} height={120} style={{borderRadius: 12, opacity: 0.9}}/> */}
+
+            {/* (Optional) QR code area if you add an image later */}
+            {/* <img src="/assets/img/qr-leetchi.png" alt="QR code Leetchi" width={120} height={120} style={{ borderRadius: 12, opacity: 0.9 }} /> */}
           </div>
         </section>
 
@@ -145,10 +159,9 @@ export default function Info() {
 
         <section>
           <p>
-            <strong>Loloup</strong> est un collectif de musiciennes et musiciens,
-            orienté improvisation et partage. On organise des{" "}
-            <strong>jam sessions ouvertes</strong> : tous styles, tous niveaux,
-            bonne ambiance obligatoire.
+            <strong>Loloup</strong> est un collectif de musiciennes et musiciens, orienté
+            improvisation et partage. On organise des <strong>jam sessions ouvertes</strong> :
+            tous styles, tous niveaux, bonne ambiance obligatoire.
           </p>
         </section>
 
@@ -156,12 +169,10 @@ export default function Info() {
           <h2>📅 Quand&nbsp;?</h2>
           <ul>
             <li>
-              <strong>1×/mois</strong> à la <em>Salle des Rancy</em> — départ{" "}
-              <strong>20h</strong>
+              <strong>1×/mois</strong> à la <em>Salle des Rancy</em> — départ <strong>20h</strong>
             </li>
             <li>
-              <strong>1×/mois</strong> au <em>Cavendish</em> — départ{" "}
-              <strong>20h</strong>
+              <strong>1×/mois</strong> au <em>Cavendish</em> — départ <strong>20h</strong>
             </li>
           </ul>
           <p>
@@ -196,14 +207,12 @@ export default function Info() {
         <section>
           <h2>🎓 Apprendre & progresser</h2>
           <p>
-            Chaque semaine, on propose aussi des{" "}
-            <strong>sessions locales sans public</strong> pour celles et ceux
-            qui veulent travailler l’impro sérieusement.
+            Chaque semaine, on propose aussi des <strong>sessions locales sans public</strong> pour
+            celles et ceux qui veulent travailler l’impro sérieusement.
           </p>
           <p>
-            Le collectif est animé par <strong>Hugo</strong> et{" "}
-            <strong>Moi</strong>, deux musiciens tournés vers{" "}
-            <strong>l’enseignement</strong> et <strong>l’improvisation</strong>.
+            Le collectif est animé par <strong>Hugo</strong> et <strong>Moi</strong>, deux musiciens
+            tournés vers <strong>l’enseignement</strong> et <strong>l’improvisation</strong>.
           </p>
         </section>
 
@@ -223,7 +232,7 @@ export default function Info() {
         </section>
       </main>
 
-      {/* Bouton retour (overlay) */}
+      {/* Back button (overlay) */}
       <Link to="/" id="navigation-overlay" aria-label="Retour à l’accueil">
         ⬅️
       </Link>

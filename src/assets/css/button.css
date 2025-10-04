@@ -1,0 +1,157 @@
+
+/* ====== Layout page ====== */
+.home {
+  position: relative;
+  z-index: 1;
+  min-height: var(--app-height);
+  display: grid;
+  place-items: center;
+  gap: 2rem;
+  padding: 2rem 1rem 6rem; /* espace pour le fab */
+}
+
+.home__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  text-align: center;
+  color: var(--color-text);
+  text-shadow: var(--glow-purple);
+}
+
+/* ====== Grille des boutons principaux ====== */
+.home__grid {
+   min-height: var(--app-height);
+  display: flex;
+  align-items: center;   /* centre horizontalement */
+  justify-content: center; /* centre verticalement */
+  gap: 3rem;
+  text-align: center;
+
+}
+
+/* Portrait: 1 colonne */
+@media (orientation: portrait) {
+  .home__grid {
+    flex-direction: column;
+     transform: translateY(0vh);
+  }
+}
+
+/* Paysage: 4 colonnes */
+@media (orientation: landscape)  {
+  .home__grid {
+    flex-direction: row;
+    transform: translateY(17vh);
+  }
+}
+
+/* ====== Bouton néon générique ====== */
+.neon-btn {
+  --bg: var(--color-cyan-base);
+  --bg-bright: var(--color-cyan-bright);
+  --glow: var(--glow-cyan);
+
+  position: relative;
+  border: none;
+  border-radius: 999px;
+  padding: 1.2rem 2rem;
+  font-size: min(5vw,5vh);
+  font-weight: 600;
+  letter-spacing: .3px;
+  color: var(--color-bg);
+  background: var(--bg);
+  box-shadow: var(--glow);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .25s ease, background .25s ease, filter .25s ease;
+  isolation: isolate; /* pour le ::after */
+  overflow: hidden;
+  text-align: center;
+  will-change: transform, filter;
+  animation: btnPulse 2.4s ease-in-out infinite;
+}
+
+.neon-btn:focus-visible {
+  outline: 2px solid var(--bg-bright);
+  outline-offset: 3px;
+}
+
+/* Reflet traversant */
+.neon-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .7s ease;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.neon-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: var(--bg-bright);
+  box-shadow:
+    0 0 6px var(--bg),
+    var(--glow);
+  filter: saturate(1.1);
+}
+.neon-btn:hover::after {
+  transform: translateX(120%);
+}
+
+/* Variantes couleur (utilisent tes suffixes) */
+.neon-btn--pink   { --bg: var(--color-pink-base);   --bg-bright: var(--color-pink-bright);   --glow: var(--glow-pink); }
+.neon-btn--cyan   { --bg: var(--color-cyan-base);   --bg-bright: var(--color-cyan-bright);   --glow: var(--glow-cyan); }
+.neon-btn--purple { --bg: var(--color-purple-base); --bg-bright: var(--color-purple-bright); --glow: var(--glow-purple); }
+.neon-btn--yellow { --bg: var(--color-yellow-base); --bg-bright: var(--color-yellow-bright); --glow: var(--glow-yellow); }
+
+/* Pulse discret (respire) */
+@keyframes btnPulse {
+  0%, 100% { transform: translateY(0) scale(1);   filter: brightness(1); }
+  50%      { transform: translateY(-1px) scale(1.015); filter: brightness(1.06); }
+}
+
+/* ====== FAB Caméra (cercle néon) ====== */
+.cam-fab {
+  position: absolute;
+  right: 10vw;
+  bottom: -10vh;
+  width: clamp(54px, 8vw, 72px);
+  height: clamp(54px, 8vw, 72px);
+  border-radius: 50%;
+  border: 2px solid var(--color-cyan-base);
+  background: rgba(0,0,0,0.35);
+  color: var(--color-cyan-light);
+  /* centrer strictement le contenu */
+  display: grid;
+  place-items: center;
+  line-height: 0;                /* ⬅️ tue la baseline des glyphes */
+  box-shadow: var(--glow-cyan);
+  cursor: pointer;
+  transition: transform .18s ease, background .25s ease, box-shadow .25s ease;
+  z-index: 20;
+  animation: fabPulse 2.8s ease-in-out infinite;
+}
+
+/* on dessine l’emoji ici pour pouvoir l’aligner finement */
+.cam-fab::before {
+  content: "📷";
+  display: block;
+  font-size: clamp(1.2rem, 3.2vw, 1.6rem);
+  line-height: 1;                /* boîte de l’emoji = carré propre */
+  transform: translateY(-25%);     /* micro-ajustement visuel */
+  transform: translateX(-47%);  
+}
+
+@keyframes fabPulse {
+  0%, 100% { box-shadow: var(--glow-cyan); }
+  50%      { box-shadow: 0 0 12px var(--color-cyan-base), var(--glow-cyan); }
+}
+
+/* Portrait: boutons ronds type "bulles" */
+@media (orientation: portrait) {
+  .neon-btn {
+    border-radius: 9999px;
+    padding-block: 1.4rem;
+  }
+}

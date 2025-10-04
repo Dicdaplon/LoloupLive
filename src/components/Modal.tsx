@@ -1,5 +1,5 @@
 // src/components/Modal.tsx
-import React from "react";
+import React from 'react';
 
 type Props = {
   open: boolean;
@@ -15,22 +15,22 @@ export default function Modal({ open, onClose, children }: Props) {
       role="dialog"
       onClick={onClose}
       style={{
-        position: "fixed",
+        position: 'fixed',
         inset: 0,
         zIndex: 50,
-        background: "rgba(0,0,0,0.45)",
-        display: "grid",
-        placeItems: "center",
+        background: 'rgba(0,0,0,0.45)',
+        display: 'grid',
+        placeItems: 'center',
         padding: 16,
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(92vw, 440px)",
-          background: "rgba(117, 6, 111, 0)",
+          width: 'min(92vw, 440px)',
+          background: 'rgba(117, 6, 111, 0)',
           borderRadius: 14,
-          boxShadow: "0 18px 48px rgba(0, 0, 0, 0)",
+          boxShadow: '0 18px 48px rgba(0, 0, 0, 0)',
           padding: 12,
         }}
       >

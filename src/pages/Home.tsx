@@ -1,55 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import P5Background from '../components/P5Background';
-import AccueilSketch from '../components/HomeButtons';
-import Logo from "../components/Logo";
-import ChatOverlay from "../components/chat/ChatOverlay";
-import ChatInput from "../components/chat/ChatInput";
-import LocalAuth from "../components/LocalAuth";
-import UserBadge from "../components/UserBadge";
-import Modal from "../components/Modal";
+import HomeButtons from '../components/HomeButtons';
+import Logo from '../components/Logo';
+import ChatOverlay from '../components/chat/ChatOverlay';
+import ChatInput from '../components/chat/ChatInput';
+import LocalAuth from '../components/LocalAuth';
+import UserBadge from '../components/UserBadge';
+import Modal from '../components/Modal';
 
-type User = { userId: string; userName: string };
+/**
+ * A minimal user shape stored locally after authentication.
+ */
+type User = {
+  userId: string;
+  userName: string;
+};
 
-export default function Home() {
+/**
+ * Home screen:
+ * - Neon p5 background
+ * - Main navigation buttons
+ * - Logo
+ * - Auth badge + modal (local auth)
+ * - Chat overlay + input
+ */
+export default function Home(): JSX.Element
+{
   const [user, setUser] = useState<User | null>(null);
   const [showAuth, setShowAuth] = useState(false);
 
-  // Récupère l'état persistant au chargement
-  useEffect(() => {
-    const uid = localStorage.getItem("uid");
-    const name = localStorage.getItem("name");
-    if (uid && name) setUser({ userId: uid, userName: name });
+  // Restore persisted user on mount
+  useEffect(() =>
+  {
+    const uid = localStorage.getItem('uid');
+    const name = localStorage.getItem('name');
+
+    if (uid && name)
+    {
+      setUser({ userId: uid, userName: name });
+    }
   }, []);
 
   return (
     <div style={{ position: 'relative', minHeight: '100dvh' }}>
       <P5Background />
-      <AccueilSketch/>
-      <Logo size={110} floating glow draggable to="/" />
+      <HomeButtons />
+      <Logo />
 
-      {/* Badge en haut à droite */}
-      <UserBadge
-        userName={user?.userName ?? null}
-        onClick={() => setShowAuth(true)}
-      />
+      {/* User badge (top-right) */}
+      <UserBadge userName={user?.userName ?? null} onClick={() => setShowAuth(true)} />
 
-      {/* Modale d'auth au clic sur le badge */}
+      {/* Auth modal toggled by the badge */}
       <Modal open={showAuth} onClose={() => setShowAuth(false)}>
-  <LocalAuth
-    autoNotifyExisting={false}   // ← empêche la fermeture immédiate
-    initialMode="login"
-    onAuth={(u) => {
-      if (u.userId && u.userName) setUser(u);
-      setShowAuth(false);
-    }}
-  />
-</Modal>
+        <LocalAuth
+          autoNotifyExisting={false} // prevent immediate auto-close on existing user
+          initialMode="login"
+          onAuth={(u) =>
+          {
+            if (u.userId && u.userName)
+            {
+              setUser(u);
+            }
+            setShowAuth(false);
+          }}
+        />
+      </Modal>
 
       {/* Chat */}
       <ChatOverlay />
       <ChatInput />
-
-      <main style={{ position: 'relative', zIndex: 2, display: 'grid', placeItems: 'center', height: '100dvh' }} />
     </div>
   );
 }

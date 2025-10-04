@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../assets/css/overlay.css';
 import UploadLyricsRTDB from '../pages/UploadLyrics';
 
-export default function OverlayLyrics() {
+export default function OverlayHome() {
   const navigate = useNavigate();
   const onAction = useCallback((which: 'A' | 'B' | 'C') => {
     console.log('Action', which);

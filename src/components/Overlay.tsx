@@ -1,15 +1,14 @@
 // EdgePeekActions.tsx
-import * as Dialog from "@radix-ui/react-dialog";
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import "../assets/css/overlay.css";
-import UploadChordsRTDB from "../pages/UploadChords"
-
+import * as Dialog from '@radix-ui/react-dialog';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../assets/css/overlay.css';
+import UploadChordsRTDB from '../pages/UploadChords';
 
 export default function EdgePeekActions() {
-    const navigate = useNavigate();
-  const onAction = useCallback((which: "A" | "B" | "C") => {
-    console.log("Action", which);
+  const navigate = useNavigate();
+  const onAction = useCallback((which: 'A' | 'B' | 'C') => {
+    console.log('Action', which);
   }, []);
 
   return (
@@ -24,10 +23,7 @@ export default function EdgePeekActions() {
           <Dialog.Title className="sr-only">Action !</Dialog.Title>
           <div className="edge-actions">
             <Dialog.Close asChild>
-              <button
-                className="edge-btn"
-                onClick={() => navigate("/uploadChords")} 
-              >
+              <button className="edge-btn" onClick={() => navigate('/uploadChords')}>
                 Ajouter grille
               </button>
             </Dialog.Close>

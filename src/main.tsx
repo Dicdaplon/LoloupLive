@@ -1,12 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
-import App from './App.tsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { HashRouter } from 'react-router-dom';
+import App from './App.tsx';
 
-import "./assets/css/style.css";
-import "./assets/css/info.css";
-import "./assets/css/paroles.css";
-import "./assets/css/chords.css";
+import './assets/css/constantColors.css';
+import './assets/css/style.css';
+import './assets/css/info.css';
+import './assets/css/paroles.css';
+import './assets/css/chords.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -14,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <HashRouter>
       <App />
     </HashRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
