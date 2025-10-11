@@ -8,6 +8,7 @@ import './assets/css/style.css';
 import './assets/css/info.css';
 import './assets/css/paroles.css';
 import './assets/css/chords.css';
+import './assets/css/chordMark.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

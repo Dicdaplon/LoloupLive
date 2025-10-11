@@ -11,6 +11,9 @@ import UploadLyricsRTDB from './pages/UploadLyrics';
 import CameraSnapClassic from './pages/CameraCapture';
 import LoloupBox from './pages/LoloupBox';
 import Compteur from './pages/game';
+import ParolesPage from './pages/chordMark';
+import ChordMarkRTDB from './pages/chordMarkRDTB';
+import UploadChordMarkPage from './pages/UploadChordMark';
 
 export default function App() {
   return (
@@ -29,6 +32,9 @@ export default function App() {
           <Route path="/compteur" element={<Compteur />} />
           <Route path="/cameraCapture" element={<CameraSnapClassic />} />
           <Route path="/loloupBox" element={<LoloupBox />} />
+          <Route path="/parolesPage" element={<ParolesPage />} />
+          <Route path="/tabs" element={<ChordMarkRTDB />} />
+          <Route path="/uploadChordMarkPage" element={<UploadChordMarkPage />} />
         </Route>
       </Routes>
     </div>

@@ -1,0 +1,28 @@
+/* src/pages/ParolesPage.css */
+.cm-root{
+  min-height:100vh; background:#07070a; color:#e8f6f6;
+  display:grid; place-items:center; padding:20px;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, "Helvetica Neue", Arial;
+}
+.cm-card{
+  width:min(980px,92vw); background:rgba(16,18,27,.75);
+  border:1px solid rgba(65,234,212,.25); border-radius:18px;
+  padding:24px; box-shadow:0 10px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.cm-section{
+  margin:14px 0 6px; text-transform:uppercase; letter-spacing:.06em; font-weight:800;
+  color:#ff2e88;
+}
+.cm-line{ margin:.28rem 0; }
+
+/* espaces rendus tels quels autour des <ruby> */
+.cm-sp{ white-space:pre; }
+
+/* accords au-dessus du mot */
+.cm-inline{ ruby-position:over; ruby-align:center; }
+.cm-ly{ white-space:pre; }
+.cm-ch{
+  font-size:.9em; line-height:1;
+  color:#41ead4; font-weight:800;
+  text-shadow:0 0 8px rgba(65,234,212,.45), 0 0 18px rgba(65,234,212,.25);
+}
