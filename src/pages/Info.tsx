@@ -113,6 +113,25 @@ export default function Info(): JSX.Element
       `}</style>
 
       <main className="info-content">
+
+<section className="jam-highlight">
+  <div className="jam-inner">
+    <h2>🎶 Prochaine Jam</h2>
+
+    <p className="jam-date">
+      <strong>Lundi 20 Octobre </strong> à <strong>20h</strong>
+    </p>
+
+    <p className="jam-lieu">
+      Cavendish — Sans soucis
+      2 Rue Professeur Rollet
+    </p>
+
+    <p className="jam-fine">
+      🎸 Amène ton instrument, ton énergie et ton groove&nbsp;!
+    </p>
+  </div>
+</section>
         {/* 💜 Donation CTA block */}
         <section className="cta-card">
           <div className="cta-row">
@@ -230,6 +249,20 @@ export default function Info(): JSX.Element
             </a>
           </p>
         </section>
+        <section>
+  <h2>📸 Souvenirs de Jam</h2>
+  <div className="photo-grid">
+    <img src="./photo/1.jpg" alt="Jam session 1" />
+    <img src="./photo/2.jpg" alt="Jam session 1" />
+    <img src="./photo/3.jpg" alt="Jam session 1" />
+    <img src="./photo/4.jpg" alt="Jam session 1" />
+    <img src="./photo/5.jpg" alt="Jam session 1" />
+    <img src="./photo/6.jpg" alt="Jam session 1" />
+    <img src="./photo/7.jpg" alt="Jam session 1" />
+    <img src="./photo/8.jpg" alt="Jam session 1" />
+    <img src="./photo/9.jpg" alt="Jam session 1" />
+  </div>
+</section>
       </main>
 
       {/* Back button (overlay) */}
