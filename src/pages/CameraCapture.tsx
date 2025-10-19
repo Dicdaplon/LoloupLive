@@ -2,8 +2,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { storage, db } from '@/lib/firebase/databaseConfiguration';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { ref as dbRef, push as dbPush, serverTimestamp } from 'firebase/database';
+import { ref as dbRef, push as dbPush } from 'firebase/database';
 import { getAuth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+
+// ✅ NEW: pour pousser un message "photo:<url>"
+import { sendMessage } from '@/components/chat/chatService';
 
 /**
  * Resolver utile seulement pour LECTURE de valeurs legacy (gs://, /o?name=…).
@@ -42,7 +45,7 @@ const CameraSnapClassic: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [disabled, setDisabled] = useState(false);
 
-  // ---- Auth anonyme auto (pour rules: auth != null)
+  // ---- Auth anonyme auto (pour rules: auth != null si nécessaire ailleurs)
   useEffect(() => {
     const auth = getAuth();
     let unsub = onAuthStateChanged(auth, async (user) => {
@@ -141,7 +144,7 @@ const CameraSnapClassic: React.FC = () => {
     });
   }
 
-  // ---- Capture + upload + push DB (index `photos`)
+  // ---- Capture + upload + push DB + broadcast overlay
   const onSnap = useCallback(async () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -199,27 +202,30 @@ const CameraSnapClassic: React.FC = () => {
         getDownloadURL(compressedRef),
       ]);
 
-      // UID pour rules (si tu en as besoin ailleurs)
-const uid = getAuth().currentUser?.uid ?? 'anon';
+      // UID + nom
+      const auth = getAuth();
+      const uid = auth.currentUser?.uid ?? 'anon';
+      const userName = localStorage.getItem('name') ?? 'Invité';
 
-// Choisis quelle URL tu veux référencer comme "url" :
-// ici je prends la compressée (plus légère pour les galeries)
-await dbPush(dbRef(db, 'photos'), {
-  // ✅ champs exigés par tes rules
-  url: urlCompressed,                 // string
-  storagePath: compressedPath,        // string
-  createdAt: Date.now(),              // number (évite serverTimestamp ici)
-  width: video.videoWidth,            // number
-  height: video.videoHeight,          // number
+      // Index RTDB (conforme à tes rules)
+      await dbPush(dbRef(db, 'photos'), {
+        url: urlCompressed,                 // version légère pour la galerie
+        storagePath: compressedPath,
+        createdAt: Date.now(),              // number (rules attendent un number)
+        width: video.videoWidth,
+        height: video.videoHeight,
+        // facultatif
+        type: 'photo',
+        originalUrl: urlOriginal,
+        compressedUrl: urlCompressed,
+        storagePaths: { original: originalPath, compressed: compressedPath },
+        userAgent: navigator.userAgent,
+        uid,
+      });
 
-  // champs complémentaires (facultatifs, autorisés par tes rules)
-  type: 'photo',
-  originalUrl: urlOriginal,
-  compressedUrl: urlCompressed,
-  storagePaths: { original: originalPath, compressed: compressedPath },
-  userAgent: navigator.userAgent,
-  uid,
-});
+      // ✅ NEW: broadcast vers l’overlay du Home
+      // ChatOverlay écoute les messages récents et affiche tout "photo:<url>"
+      await sendMessage(`photo:${urlCompressed}`, { userId: uid, userName });
 
       alert('📸 Photo envoyée !');
     } catch (err: any) {
