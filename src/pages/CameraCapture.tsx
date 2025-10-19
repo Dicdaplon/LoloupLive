@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { storage, db } from '@/lib/firebase/databaseConfiguration';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { ref as dbRef, push as dbPush } from 'firebase/database';
+import { ref as dbRef, push as dbPush, serverTimestamp } from 'firebase/database';
+import { getAuth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 
 /**
  * Resolver utile seulement pour LECTURE de valeurs legacy (gs://, /o?name=…).
@@ -40,6 +41,21 @@ const CameraSnapClassic: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [disabled, setDisabled] = useState(false);
+
+  // ---- Auth anonyme auto (pour rules: auth != null)
+  useEffect(() => {
+    const auth = getAuth();
+    let unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        try {
+          await signInAnonymously(auth);
+        } catch (e) {
+          console.warn('Anonymous sign-in failed:', e);
+        }
+      }
+    });
+    return () => unsub?.();
+  }, []);
 
   // ---- Démarrage caméra (avec fallback)
   const startCamera = useCallback(async () => {
@@ -125,7 +141,7 @@ const CameraSnapClassic: React.FC = () => {
     });
   }
 
-  // ---- Capture + upload + push DB (URLs signées seulement)
+  // ---- Capture + upload + push DB (index `photos`)
   const onSnap = useCallback(async () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -166,29 +182,44 @@ const CameraSnapClassic: React.FC = () => {
       ]);
 
       const ts = Date.now();
-      const originalRef = storageRef(storage, `originals/photo-${ts}.jpg`);
-      const compressedRef = storageRef(storage, `compressed/photo-${ts}.jpg`);
+      const originalPath = `originals/photo-${ts}.jpg`;
+      const compressedPath = `compressed/photo-${ts}.jpg`;
+      const originalRef = storageRef(storage, originalPath);
+      const compressedRef = storageRef(storage, compressedPath);
 
-      // Uploads (le SDK gère les métadonnées + type)
+      // Uploads
       await Promise.all([
         uploadBytes(originalRef, originalBlob, { contentType: 'image/jpeg' }),
         uploadBytes(compressedRef, compressedBlob, { contentType: 'image/jpeg' }),
       ]);
 
-      // URLs signées (tokenisées) — à utiliser telles quelles dans <img src="...">
+      // URLs signées
       const [urlOriginal, urlCompressed] = await Promise.all([
         getDownloadURL(originalRef),
         getDownloadURL(compressedRef),
       ]);
 
-      // Un seul push DB, propre + rétro-compat 'text:photo:<url>'
-      await dbPush(dbRef(db, 'messages'), {
-        type: 'photo',
-        originalUrl: urlOriginal,
-        compressedUrl: urlCompressed,
-        text: 'photo:' + urlCompressed,
-        createdAt: ts,
-      });
+      // UID pour rules (si tu en as besoin ailleurs)
+const uid = getAuth().currentUser?.uid ?? 'anon';
+
+// Choisis quelle URL tu veux référencer comme "url" :
+// ici je prends la compressée (plus légère pour les galeries)
+await dbPush(dbRef(db, 'photos'), {
+  // ✅ champs exigés par tes rules
+  url: urlCompressed,                 // string
+  storagePath: compressedPath,        // string
+  createdAt: Date.now(),              // number (évite serverTimestamp ici)
+  width: video.videoWidth,            // number
+  height: video.videoHeight,          // number
+
+  // champs complémentaires (facultatifs, autorisés par tes rules)
+  type: 'photo',
+  originalUrl: urlOriginal,
+  compressedUrl: urlCompressed,
+  storagePaths: { original: originalPath, compressed: compressedPath },
+  userAgent: navigator.userAgent,
+  uid,
+});
 
       alert('📸 Photo envoyée !');
     } catch (err: any) {
