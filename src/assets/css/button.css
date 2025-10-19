@@ -36,8 +36,13 @@
     margin-top: 2vh;
     flex-direction: column;
      transform: translateY(0vh);
-     gap: 8vh;
+     gap: 6vh;
   }
+
+    .neon-btn {
+  padding: 3vh 2rem;
+  font-size: 1.5vh;
+}
 }
 
 /* Paysage: 4 colonnes */
@@ -46,6 +51,11 @@
     flex-direction: row;
     transform: translateY(17vh);
   }
+
+  .neon-btn {
+  padding: 4vh 2rem;
+  font-size: 1.5vw;
+}
 }
 
 /* ====== Bouton néon générique ====== */
@@ -57,8 +67,6 @@
   position: relative;
   border: none;
   border-radius: 999px;
-  padding: 1.2rem 2rem;
-  font-size: min(5vw,5vh);
   font-weight: 600;
   letter-spacing: .3px;
   color: var(--color-bg);
@@ -179,12 +187,4 @@
 @keyframes fabPulse {
   0%, 100% { box-shadow: var(--glow-cyan); }
   50%      { box-shadow: 0 0 12px var(--color-cyan-base), var(--glow-cyan); }
-}
-
-/* Portrait: boutons ronds type "bulles" */
-@media (orientation: portrait) {
-  .neon-btn {
-    border-radius: 9999px;
-    padding-block: 1.4rem;
-  }
 }

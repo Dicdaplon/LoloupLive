@@ -52,7 +52,7 @@ h1 {
 
   #logo {
   position: absolute;
-  top: 70vh;
+  top: 73vh;
   left: 10vw;
   width:  15vh;
   filter: drop-shadow(0 0 5px #0ff)
@@ -65,8 +65,8 @@ h1 {
 .floating-message-loloup {
   position: relative;
   font-size: 0.7rem;
-  top: 70vh;
-  left: 47vw;
+  top: 73vh;
+  left: 35vw;
   font-weight: bold;
   pointer-events: none;
   z-index: 999;
@@ -100,7 +100,7 @@ h1 {
   z-index: 999;
   transition: opacity 1s ease;
   white-space: nowrap;
-  left :25vw;
+  left :18vw;
   top: 67vh;
 }
 
