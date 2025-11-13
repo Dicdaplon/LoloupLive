@@ -7,6 +7,7 @@ import ChatInput from '../components/chat/ChatInput';
 import LocalAuth from '../components/LocalAuth';
 import UserBadge from '../components/UserBadge';
 import Modal from '../components/Modal';
+import OverlayHome from '../components/OverlayBase';
 
 /**
  * A minimal user shape stored locally after authentication.
@@ -65,7 +66,10 @@ export default function Home(): JSX.Element
           }}
         />
       </Modal>
-
+      {/* EdgePeek overlay */}
+            <div style={{ position: 'fixed', top: 12, right: 12, zIndex: 1000 }}>
+              <OverlayHome />
+            </div>
       {/* Chat */}
       <ChatOverlay />
       <ChatInput />

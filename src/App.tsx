@@ -14,6 +14,7 @@ import Compteur from './pages/game';
 import ParolesPage from './pages/chordMark';
 import ChordMarkRTDB from './pages/chordMarkRDTB';
 import UploadChordMarkPage from './pages/UploadChordMark';
+import Gallery1 from './pages/Gallery';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/parolesPage" element={<ParolesPage />} />
           <Route path="/tabs" element={<ChordMarkRTDB />} />
           <Route path="/uploadChordMarkPage" element={<UploadChordMarkPage />} />
+          <Route path="/Gallery" element={<Gallery1 />} />
         </Route>
       </Routes>
     </div>
