@@ -119,20 +119,7 @@ export default function Info(): JSX.Element
     <h2>🎶 Prochaines Jam</h2>
 
     <p className="jam-date">
-      <strong>Mardi 18 Novembre </strong> à <strong>20h</strong>
-    </p>
-
-    <p className="jam-lieu">
-      Cavendish — Sans soucis
-      2 Rue Professeur Rollet
-    </p>
-
-    <p className="jam-fine">
-      🎸 Amène ton instrument, ton énergie et ton groove&nbsp;!
-    </p>
-
-       <p className="jam-date">
-      <strong>Lundi 24 Novembre </strong> à <strong>20h30</strong>
+      <strong>Mardi 18 Novembre </strong> à <strong>20h30</strong>
     </p>
 
     <p className="jam-lieu">
@@ -141,11 +128,24 @@ export default function Info(): JSX.Element
     </p>
 
     <p className="jam-fine">
-      🎸 Idéal pour débuter&nbsp;!
+    🎸 Idéal pour débuter&nbsp;!
+    </p>
+
+       <p className="jam-date">
+      <strong>Lundi 24 Novembre </strong> à <strong>20h</strong>
+    </p>
+
+    <p className="jam-lieu">
+      Cavendish — Sans soucis
+      2 Rue Professeur Rollet
+    </p>
+
+    <p className="jam-fine">
+     🎸 Amène ton instrument, ton énergie et ton groove&nbsp;!
     </p>
 
            <p className="jam-date">
-      <strong>Décembre </strong> à <strong>20h30</strong>
+      <strong>Décembre </strong> à <strong>Venir</strong>
     </p>
          <h2>🎶 Soirée Bachata </h2>
     <p className="jam-lieu">
