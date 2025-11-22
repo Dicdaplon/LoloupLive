@@ -4,13 +4,11 @@ import { storage, db } from '@/lib/firebase/databaseConfiguration';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as dbRef, push as dbPush } from 'firebase/database';
 import { getAuth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
-
-// ✅ NEW: pour pousser un message "photo:<url>"
+import gifshot from 'gifshot';
 import { sendMessage } from '@/components/chat/chatService';
 
 /**
  * Resolver utile seulement pour LECTURE de valeurs legacy (gs://, /o?name=…).
- * Ici on n’en a pas besoin dans le flux d’upload (on stocke directement les URLs signées).
  */
 async function resolveStorageUrl(input: string): Promise<string> {
   if (!input) return '';
@@ -40,12 +38,45 @@ async function resolveStorageUrl(input: string): Promise<string> {
   }
 }
 
+const GIF_PRESETS = {
+  short: {
+    label: 'GIF 2s',
+    captureMs: 2000,   // durée pendant laquelle on CAPTURE
+    frames: 10,        // nombre de photos
+    gifDurationMs: 2000, // durée totale de lecture du GIF (peut être différente)
+  },
+  long: {
+    label: 'GIF 4s',
+    captureMs: 4000,
+    frames: 15,
+    gifDurationMs: 4000,
+  },
+} as const;
+
+// Helper : convertir un dataURL (gifUrl) en Blob
+function dataURLToBlob(dataUrl: string): Blob {
+  const [header, base64] = dataUrl.split(',');
+  const mimeMatch = header.match(/data:(.*);base64/);
+  const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+  const binary = atob(base64);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mime });
+}
+
 const CameraSnapClassic: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [disabled, setDisabled] = useState(false);
 
-  // ---- Auth anonyme auto (pour rules: auth != null si nécessaire ailleurs)
+  const [gifUrl, setGifUrl] = useState<string | null>(null);
+  const [makingGif, setMakingGif] = useState(false);
+  const [uploadingGif, setUploadingGif] = useState(false);
+
+  // ---- Auth anonyme auto
   useEffect(() => {
     const auth = getAuth();
     let unsub = onAuthStateChanged(auth, async (user) => {
@@ -68,8 +99,8 @@ const CameraSnapClassic: React.FC = () => {
     const tryStart = async (constraints: MediaStreamConstraints) => {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       video.srcObject = stream;
-      (video as any).playsInline = true; // iOS
-      video.muted = true;                // iOS autoplay
+      (video as any).playsInline = true;
+      video.muted = true;
       await video.play().catch(() => {});
       video.onloadedmetadata = () => {
         console.log('🎥 Résolution :', `${video.videoWidth}x${video.videoHeight}`);
@@ -144,8 +175,83 @@ const CameraSnapClassic: React.FC = () => {
     });
   }
 
-  // ---- Capture + upload + push DB + broadcast overlay
+  // ---- Capture + upload photo + DB + overlay
   const onSnap = useCallback(async () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+
+    if (video.readyState < 2) {
+      alert('📷 La caméra n’est pas encore prête !');
+      return;
+    }
+
+    setDisabled(true);
+
+    // Flash visuel
+    const flash = document.createElement('div');
+    flash.style.position = 'fixed';
+    flash.style.inset = '0';
+    flash.style.background = '#fff';
+    flash.style.opacity = '0.7';
+    flash.style.zIndex = '9999';
+    flash.style.transition = 'opacity .4s ease';
+    document.body.appendChild(flash);
+    requestAnimationFrame(() => {
+      flash.style.opacity = '0';
+      setTimeout(() => flash.remove(), 400);
+    });
+
+    try {
+      // Snapshot
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('2D context unavailable');
+      ctx.drawImage(video, 0, 0);
+
+      const originalBlob = await canvasToBlob(canvas, 'image/jpeg', 1.0);
+
+      const ts = Date.now();
+      const originalPath = `originals/photo-${ts}.jpg`;
+      const originalRef = storageRef(storage, originalPath);
+
+      await uploadBytes(originalRef, originalBlob, { contentType: 'image/jpeg' });
+
+      const urlOriginal = await getDownloadURL(originalRef);
+
+      const auth = getAuth();
+      const uid = auth.currentUser?.uid ?? 'anon';
+      const userName = localStorage.getItem('name') ?? 'Invité';
+
+      await dbPush(dbRef(db, 'photos'), {
+        url: urlOriginal,
+        storagePath: originalPath,
+        createdAt: Date.now(),
+        width: video.videoWidth,
+        height: video.videoHeight,
+        type: 'photo',
+        originalUrl: urlOriginal,
+        storagePaths: { original: originalPath },
+        userAgent: navigator.userAgent,
+        uid,
+      });
+
+      await sendMessage(`photo:${urlOriginal}`, { userId: uid, userName });
+
+      alert('📸 Photo envoyée !');
+    } catch (err: any) {
+      console.error('❌ Erreur upload :', err);
+      alert('Erreur lors de l’envoi : ' + (err?.message ?? err));
+    } finally {
+      setDisabled(false);
+    }
+  }, []);
+
+  // ---- Générique : faire un GIF local
+  type GifOptions = { captureMs: number; frames: number; gifDurationMs: number };
+
+  const makeGif = useCallback(async ({ captureMs, frames, gifDurationMs }: GifOptions) => {
   const video = videoRef.current;
   const canvas = canvasRef.current;
   if (!video || !canvas) return;
@@ -155,74 +261,93 @@ const CameraSnapClassic: React.FC = () => {
     return;
   }
 
-  setDisabled(true);
-
-  // Flash visuel
-  const flash = document.createElement('div');
-  flash.style.position = 'fixed';
-  flash.style.inset = '0';
-  flash.style.background = '#fff';
-  flash.style.opacity = '0.7';
-  flash.style.zIndex = '9999';
-  flash.style.transition = 'opacity .4s ease';
-  document.body.appendChild(flash);
-  requestAnimationFrame(() => {
-    flash.style.opacity = '0';
-    setTimeout(() => flash.remove(), 400);
-  });
+  setMakingGif(true);
+  setGifUrl(null);
 
   try {
-    // Snapshot
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('2D context unavailable');
-    ctx.drawImage(video, 0, 0);
 
-    // 👉 On ne garde plus que l'original
-    const originalBlob = await canvasToBlob(canvas, 'image/jpeg', 1.0);
+    const images: string[] = [];
+    const targetWidth = 400;
+    const ratio = targetWidth / video.videoWidth;
+    const w = targetWidth;
+    const h = Math.round(video.videoHeight * ratio);
 
-    const ts = Date.now();
-    const originalPath = `originals/photo-${ts}.jpg`;
-    const originalRef = storageRef(storage, originalPath);
+    canvas.width = w;
+    canvas.height = h;
 
-    // 👉 Upload unique : seulement l’original
-    await uploadBytes(originalRef, originalBlob, { contentType: 'image/jpeg' });
+    // temps entre chaque capture
+    const delayPerFrameCaptureMs = captureMs / frames;
 
-    // URL signée
-    const urlOriginal = await getDownloadURL(originalRef);
+    for (let i = 0; i < frames; i++) {
+      ctx.drawImage(video, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      images.push(dataUrl);
 
-    // UID + nom
-    const auth = getAuth();
-    const uid = auth.currentUser?.uid ?? 'anon';
-    const userName = localStorage.getItem('name') ?? 'Invité';
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(resolve => setTimeout(resolve, delayPerFrameCaptureMs));
+    }
 
-    // 👉 Index RTDB : on ne stocke plus que l’original
-    await dbPush(dbRef(db, 'photos'), {
-      url: urlOriginal,            // tu pourras plus tard utiliser compressed si besoin
-      storagePath: originalPath,
-      createdAt: Date.now(),
-      width: video.videoWidth,
-      height: video.videoHeight,
-      type: 'photo',
-      originalUrl: urlOriginal,
-      storagePaths: { original: originalPath },
-      userAgent: navigator.userAgent,
-      uid,
+    // temps d'affichage par frame dans le GIF
+    const frameDisplayMs = gifDurationMs / frames;
+    const intervalSeconds = frameDisplayMs / 1000;
+
+    await new Promise<void>((resolve, reject) => {
+      gifshot.createGIF(
+        {
+          images,
+          interval: intervalSeconds, // durée par frame en secondes
+          gifWidth: w,
+          gifHeight: h,
+        },
+        (obj: any) => {
+          if (obj.error) {
+            console.error('Erreur GIF:', obj.errorMsg || obj.error);
+            reject(new Error(obj.errorMsg || 'Erreur GIF'));
+          } else {
+            setGifUrl(obj.image); // dataURL du GIF
+            resolve();
+          }
+        }
+      );
     });
-
-    // 👉 Broadcast overlay avec l’original (compressed arrivera un peu après côté backend)
-    await sendMessage(`photo:${urlOriginal}`, { userId: uid, userName });
-
-    alert('📸 Photo envoyée !');
   } catch (err: any) {
-    console.error('❌ Erreur upload :', err);
-    alert('Erreur lors de l’envoi : ' + (err?.message ?? err));
+    console.error('❌ Erreur création GIF :', err);
+    alert('Erreur lors de la création du GIF : ' + (err?.message ?? err));
   } finally {
-    setDisabled(false);
+    setMakingGif(false);
   }
 }, []);
 
+
+  // ---- NEW : upload du GIF vers Storage /gif
+  const uploadGif = useCallback(async () => {
+    if (!gifUrl) {
+      alert('Aucun GIF à envoyer. Crée-en un d’abord 🙂');
+      return;
+    }
+
+    setUploadingGif(true);
+    try {
+      const blob = dataURLToBlob(gifUrl); // "image/gif"
+      const ts = Date.now();
+      const gifPath = `gif/gif-${ts}.gif`;
+      const gifRef = storageRef(storage, gifPath);
+
+      await uploadBytes(gifRef, blob, { contentType: 'image/gif' });
+      const url = await getDownloadURL(gifRef);
+
+      console.log('GIF uploadé :', gifPath, url);
+      alert('🎞️ GIF uploadé dans Storage/gif !');
+      // pour l’instant, on ne fait PAS de DB ni de chat
+    } catch (err: any) {
+      console.error('❌ Erreur upload GIF :', err);
+      alert('Erreur lors de l’upload du GIF : ' + (err?.message ?? err));
+    } finally {
+      setUploadingGif(false);
+    }
+  }, [gifUrl]);
 
   return (
     <div>
@@ -244,6 +369,7 @@ const CameraSnapClassic: React.FC = () => {
       />
       <canvas ref={canvasRef} id="canvas" style={{ display: 'none' }} />
 
+      {/* Bouton photo classique */}
       <button
         id="snap"
         onClick={onSnap}
@@ -272,6 +398,94 @@ const CameraSnapClassic: React.FC = () => {
       >
         {disabled ? '⏳' : '📤'}
       </button>
+
+      {/* Boutons GIF 2s / 5s */}
+      <button
+        onClick={() => makeGif(GIF_PRESETS.short)}
+        disabled={disabled || makingGif}
+        style={{
+          position: 'fixed',
+          right: '1.5rem',
+          bottom: 'max(1.2rem, env(safe-area-inset-bottom))',
+          zIndex: 2,
+          padding: '8px 14px',
+          borderRadius: 999,
+          border: '1px solid #00fff0',
+          background: 'rgba(0,0,0,0.6)',
+          color: '#cfffff',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          boxShadow: '0 0 8px rgba(0,255,255,0.5)',
+          cursor: disabled || makingGif ? 'not-allowed' : 'pointer',
+          marginLeft: '0.5rem',
+        }}
+      >
+        {makingGif ? 'GIF…' : GIF_PRESETS.short.label}
+      </button>
+
+      <button
+        onClick={() => makeGif(GIF_PRESETS.long)}
+        disabled={disabled || makingGif}
+        style={{
+          position: 'fixed',
+          right: '1.5rem',
+          bottom: 'calc(max(1.2rem, env(safe-area-inset-bottom)) + 2.7rem)',
+          zIndex: 2,
+          padding: '8px 14px',
+          borderRadius: 999,
+          border: '1px solid #00fff0',
+          background: 'rgba(0,0,0,0.6)',
+          color: '#cfffff',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          boxShadow: '0 0 8px rgba(0,255,255,0.5)',
+          cursor: disabled || makingGif ? 'not-allowed' : 'pointer',
+          marginLeft: '0.5rem',
+        }}
+      >
+        {makingGif ? 'GIF…' : GIF_PRESETS.long.label}
+      </button>
+
+      {/* Prévisualisation + upload GIF */}
+      {gifUrl && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '1rem',
+            right: '1rem',
+            zIndex: 3,
+            background: 'rgba(0,0,0,0.7)',
+            padding: '8px',
+            borderRadius: 8,
+            boxShadow: '0 0 12px rgba(0,0,0,0.6)',
+          }}
+        >
+          <div style={{ color: '#cfffff', fontSize: 12, marginBottom: 4 }}>
+            Prévisualisation GIF
+          </div>
+          <img
+            src={gifUrl}
+            alt="Prévisualisation GIF"
+            style={{ maxWidth: '200px', borderRadius: 4, display: 'block', marginBottom: 6 }}
+          />
+          <button
+            onClick={uploadGif}
+            disabled={uploadingGif}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 6,
+              border: '1px solid #00fff0',
+              background: 'rgba(0,0,0,0.8)',
+              color: '#cfffff',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: uploadingGif ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {uploadingGif ? 'Envoi…' : 'Envoyer ce GIF'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

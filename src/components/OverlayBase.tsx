@@ -27,6 +27,11 @@ export default function OverlayLyrics() {
                 Voir la gallerie
               </button>
             </Dialog.Close>
+              <Dialog.Close asChild>
+              <button className="edge-btn" onClick={() => navigate('/galleryGif')}>
+                Voir les gif
+              </button>
+            </Dialog.Close>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

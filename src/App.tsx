@@ -15,6 +15,7 @@ import ParolesPage from './pages/chordMark';
 import ChordMarkRTDB from './pages/chordMarkRDTB';
 import UploadChordMarkPage from './pages/UploadChordMark';
 import Gallery1 from './pages/Gallery';
+import GalleryGif from './pages/GalleryGif';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/tabs" element={<ChordMarkRTDB />} />
           <Route path="/uploadChordMarkPage" element={<UploadChordMarkPage />} />
           <Route path="/Gallery" element={<Gallery1 />} />
+          <Route path="/GalleryGif" element={<GalleryGif />} />
         </Route>
       </Routes>
     </div>
